@@ -1,6 +1,9 @@
 import tkinter as tk
+import copy
+import time
 from init import GomokuGame
 from gui_helper import erase_stone
+from minmax import minmax, clone_game
 
 game = GomokuGame()
 root = tk.Tk()
@@ -9,6 +12,8 @@ main_frame.pack()
 
 canvas = tk.Canvas(main_frame, width=800, height=800, bg='lightyellow')
 canvas.pack(side=tk.LEFT)
+
+temp_stone_id = None
 
 log_text = tk.Text(main_frame, width=40, height=47, state=tk.DISABLED, bg='black', fg='white')
 log_text.pack(side=tk.RIGHT)
@@ -39,6 +44,7 @@ def end_game(winner):
 	else:
 		winner_text = "It's a draw!"
 	canvas.create_text(400, 400, text=winner_text, font=("Arial", 24), fill="red")
+	log_message(winner_text)
 	canvas.unbind("<Button-1>")
 
 def print_board():
@@ -47,29 +53,50 @@ def print_board():
 		board_str += " ".join(str(cell) for cell in row) + "\n"
 	log_message(board_str)
 
+def draw_temp_stone(row, col):
+    """Draw a small red stone at (row, col) and return its canvas id."""
+    x = game.cell_size + col * game.cell_size
+    y = game.cell_size + row * game.cell_size
+    r = game.cell_size // 4  # smaller radius
+    return canvas.create_oval(x - r, y - r, x + r, y + r, fill="red", outline="red")
+
+
 def click(event):
-	x = event.x
-	y = event.y
-	row = round((y - game.cell_size) / game.cell_size)
-	col = round((x - game.cell_size) / game.cell_size)
-	# log_message(f"Clicked cell: {row}, {col}")
-	if 0 <= row < game.board_size and 0 <= col < game.board_size:
-		result, error = game.place_stone(row, col)
-		if error:
-			log_message(error)
-			return
-		captured = result
-		if captured is not False:
-			color = "black" if game.board[row][col] == 1 else "white"
-			draw_stone(row, col, color)
-			for r, c in captured:
-				erase_stone(game, canvas, r, c)
-				game.taken_stones[game.current_player - 1] += 1
-			winner = check_winner()
-			if winner != 0:
-				end_game(winner)
-				return
-		# print_board()
+    global temp_stone_id
+    x = event.x
+    y = event.y
+    row = round((y - game.cell_size) / game.cell_size)
+    col = round((x - game.cell_size) / game.cell_size)
+    # log_message(f"Clicked cell: {row}, {col}")
+    if 0 <= row < game.board_size and 0 <= col < game.board_size:
+        result, error = game.place_stone(row, col)
+        if error:
+            log_message(error)
+            return
+        captured = result
+        if captured is not False:
+            color = "black" if game.board[row][col] == 1 else "white"
+            draw_stone(row, col, color)
+            for r, c in captured:
+                erase_stone(game, canvas, r, c)
+                game.taken_stones[game.current_player - 1] += 1
+            winner = check_winner()
+            if winner != 0:
+                end_game(winner)
+                return
+        start_time = time.time()
+        max_eval, best_move = (minmax(clone_game(game), 3, -float('inf'), float('inf'), True))
+        elapsed_time = time.time() - start_time
+        log_message(f"the best move found was {best_move} with a score of {max_eval} found in {elapsed_time:.2f} seconds")
+        # Erase previous temp stone if it exists
+        if temp_stone_id is not None:
+            canvas.delete(temp_stone_id)
+            temp_stone_id = None
+
+        # Draw new temp stone if best_move is valid
+        if best_move is not None:
+            temp_stone_id = draw_temp_stone(*best_move)
+
 
 def check_winner():
 	# if any player has taken 10 stones he/she wins

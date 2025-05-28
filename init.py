@@ -1,3 +1,5 @@
+import copy
+
 class GomokuGame:
     def __init__(self):
         self.board_size = 19
@@ -10,6 +12,20 @@ class GomokuGame:
         self.rule_center_opening = True
         self.rule_no_double_threes = True
         self.rule_captures = True
+    
+    def __deepcopy__(self, memo):
+        # Only copy the game state, not GUI objects
+        new_game = GomokuGame()
+        new_game.board_size = self.board_size
+        new_game.cell_size = self.cell_size
+        new_game.board = copy.deepcopy(self.board, memo)
+        new_game.current_player = self.current_player
+        new_game.taken_stones = copy.deepcopy(self.taken_stones, memo)
+        # Do NOT copy stone_ids or any Tkinter objects
+        new_game.rule_center_opening = self.rule_center_opening
+        new_game.rule_no_double_threes = self.rule_no_double_threes
+        new_game.rule_captures = self.rule_captures
+        return new_game
     
 
     def capture_stone(self, row, col):
@@ -99,22 +115,26 @@ class GomokuGame:
 
     def is_double_free_three(self, row, col, player):
         directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
-        total_open_threes = 0
+        open_three_directions = 0
 
-        # Simule le coup
-        self.board[row][col] = player
+        self.board[row][col] = player  # Simule le coup
 
         for dr, dc in directions:
-            total_open_threes += self.count_open_threes_in_line(row, col, dr, dc, player)
+            count = self.count_open_threes_in_line(row, col, dr, dc, player)
+            if count >= 1:
+                open_three_directions += 1
+            if open_three_directions >= 2:
+                self.board[row][col] = 0
+                return True
 
-        self.board[row][col] = 0  # Annule le coup
+        self.board[row][col] = 0
+        return False
 
-        return total_open_threes >= 2
 
 
     def place_stone(self, row, col):
         if self.board[row][col] != 0:
-            return False  # Already occupied
+            return False, "Cell already occupied"  # Already occupied
 
         if self.rule_center_opening and self.current_player == 1 and all(cell == 0 for row_ in self.board for cell in row_):
             if (row, col) != (self.board_size // 2, self.board_size // 2):
