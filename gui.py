@@ -6,12 +6,12 @@ from gui_helper import erase_stone
 from minmax import minmax, clone_game
 
 game = GomokuGame()
-root = tk.Tk()
-main_frame = tk.Frame(root)
+game.root = tk.Tk()
+main_frame = tk.Frame(game.root)
 main_frame.pack()
 
-canvas = tk.Canvas(main_frame, width=800, height=800, bg='lightyellow')
-canvas.pack(side=tk.LEFT)
+game.canvas = tk.Canvas(main_frame, width=800, height=800, bg='lightyellow')
+game.canvas.pack(side=tk.LEFT)
 
 temp_stone_id = None
 
@@ -26,15 +26,15 @@ def log_message(message):
 
 for i in range(game.board_size):
     # Vertical lines
-	canvas.create_line(game.cell_size, game.cell_size + i * game.cell_size, game.cell_size * game.board_size, game.cell_size + i * game.cell_size)
+	game.canvas.create_line(game.cell_size, game.cell_size + i * game.cell_size, game.cell_size * game.board_size, game.cell_size + i * game.cell_size)
     # Horizontal lines
-	canvas.create_line(game.cell_size + i * game.cell_size, game.cell_size, game.cell_size + i * game.cell_size, game.cell_size * game.board_size)
+	game.canvas.create_line(game.cell_size + i * game.cell_size, game.cell_size, game.cell_size + i * game.cell_size, game.cell_size * game.board_size)
 
 def draw_stone(row, col, color):
     x = game.cell_size + col * game.cell_size
     y = game.cell_size + row * game.cell_size
     r = game.cell_size // 2 - 2
-    game.stone_ids[row][col] = canvas.create_oval(x - r, y - r, x + r, y + r, fill=color)
+    game.stone_ids[row][col] = game.canvas.create_oval(x - r, y - r, x + r, y + r, fill=color)
 
 def end_game(winner):
 	if winner == 1:
@@ -43,9 +43,9 @@ def end_game(winner):
 		winner_text = "White wins!"
 	else:
 		winner_text = "It's a draw!"
-	canvas.create_text(400, 400, text=winner_text, font=("Arial", 24), fill="red")
+	game.canvas.create_text(400, 400, text=winner_text, font=("Arial", 24), fill="red")
 	log_message(winner_text)
-	canvas.unbind("<Button-1>")
+	game.canvas.unbind("<Button-1>")
 
 def print_board():
 	board_str = ""
@@ -54,12 +54,11 @@ def print_board():
 	log_message(board_str)
 
 def draw_temp_stone(row, col):
-    """Draw a small red stone at (row, col) and return its canvas id."""
+    """Draw a small red stone at (row, col) and return its game.canvas id."""
     x = game.cell_size + col * game.cell_size
     y = game.cell_size + row * game.cell_size
     r = game.cell_size // 4  # smaller radius
-    return canvas.create_oval(x - r, y - r, x + r, y + r, fill="red", outline="red")
-
+    return game.canvas.create_oval(x - r, y - r, x + r, y + r, fill="red", outline="red")
 
 def click(event):
     global temp_stone_id
@@ -78,19 +77,19 @@ def click(event):
             color = "black" if game.board[row][col] == 1 else "white"
             draw_stone(row, col, color)
             for r, c in captured:
-                erase_stone(game, canvas, r, c)
+                erase_stone(game, game.canvas, r, c)
                 game.taken_stones[game.current_player - 1] += 1
             winner = check_winner()
             if winner != 0:
                 end_game(winner)
                 return
         start_time = time.time()
-        max_eval, best_move = (minmax(clone_game(game), 3, -float('inf'), float('inf'), True))
+        max_eval, best_move = (minmax(clone_game(game), 2, -float('inf'), float('inf'), True, visualize=True, main_game=game))
         elapsed_time = time.time() - start_time
         log_message(f"the best move found was {best_move} with a score of {max_eval} found in {elapsed_time:.2f} seconds")
         # Erase previous temp stone if it exists
         if temp_stone_id is not None:
-            canvas.delete(temp_stone_id)
+            game.canvas.delete(temp_stone_id)
             temp_stone_id = None
 
         # Draw new temp stone if best_move is valid
@@ -121,6 +120,6 @@ def check_winner():
 					return color
 	return 0
 
-canvas.bind("<Button-1>", click)
+game.canvas.bind("<Button-1>", click)
 
-root.mainloop()
+game.root.mainloop()

@@ -1,4 +1,4 @@
-import copy
+import time
 
 transposition_table = {}
 
@@ -34,6 +34,9 @@ def evaluate(game):
     board = game.board
     size = game.board_size
 
+    if size < 5:
+        return 0
+
     directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
 
     for i in range(size):
@@ -48,25 +51,25 @@ def evaluate(game):
                         valid = False
                         break
                     stones.append(board[ni][nj])
-                if not valid:
+                if not valid or len(stones) != 5:
                     continue
 
-
+                # Only evaluate if stones is valid and length 5
                 if stones.count(player) == 5:
                     return float('inf')
-                elif stones.count(opponent) == 5:
+                if stones.count(opponent) == 5:
                     return -float('inf')
-                elif stones.count(player) == 4 and stones.count(0) == 1:
+                if stones.count(player) == 4 and stones.count(0) == 1:
                     score += 1000
-                elif stones.count(player) == 3 and stones.count(0) == 2:
+                if stones.count(player) == 3 and stones.count(0) == 2:
                     score += 100
-                elif stones.count(player) == 2 and stones.count(0) == 3:
+                if stones.count(player) == 2 and stones.count(0) == 3:
                     score += 10
-                elif stones.count(opponent) == 4 and stones.count(0) == 1:
+                if stones.count(opponent) == 4 and stones.count(0) == 1:
                     score -= 1000
-                elif stones.count(opponent) == 3 and stones.count(0) == 2:
+                if stones.count(opponent) == 3 and stones.count(0) == 2:
                     score -= 100
-                elif stones.count(opponent) == 2 and stones.count(0) == 3:
+                if stones.count(opponent) == 2 and stones.count(0) == 3:
                     score -= 10
 
     score += (game.taken_stones[player - 1] - game.taken_stones[opponent - 1]) * 500
@@ -90,11 +93,11 @@ def generate_candidates(game):
 
 def clone_game(game):
     new_game = game.__class__()
+    new_game.board_size = game.board_size
+    new_game.cell_size = game.cell_size
     new_game.board = [row[:] for row in game.board]
     new_game.taken_stones = list(game.taken_stones)
     new_game.current_player = game.current_player
-    new_game.board_size = game.board_size  # <-- OBLIGATOIRE
-    new_game.cell_size = game.cell_size  # <-- OBLIGATOIRE
     return new_game
 
 
@@ -139,7 +142,7 @@ def generate_all_boards(game):
     return possible_games
 
 
-def minmax(game, depth, alpha, beta, maximizing_player):
+def minmax(game, depth, alpha, beta, maximizing_player, visualize=False, main_game=None):
     state_key = (depth, maximizing_player, board_hash(game))
     if state_key in transposition_table:
         return transposition_table[state_key]
@@ -152,7 +155,6 @@ def minmax(game, depth, alpha, beta, maximizing_player):
     best_move = None
     all_boards = generate_all_boards(game)
     if not all_boards:
-        # No moves available, return evaluation
         eval_result = evaluate(game), None
         transposition_table[state_key] = eval_result
         return eval_result
@@ -160,25 +162,57 @@ def minmax(game, depth, alpha, beta, maximizing_player):
     if maximizing_player:
         max_eval = -float('inf')
         for new_game, move in all_boards:
-            eval_score, _ = minmax(new_game, depth - 1, alpha, beta, False)
+            i, j = move
+            if visualize and main_game is not None:
+                main_game.show_visual_move(i, j, color="blue")
+                if game.root is not None:
+                    game.root.update_idletasks()
+                # time.sleep(0.05)  # small pause to visualize
+
+            eval_score, _ = minmax(new_game, depth - 1, alpha, beta, False, visualize)
+
+            if visualize and main_game is not None:
+                main_game.remove_visual_move(i, j)
+
             if eval_score > max_eval:
                 max_eval = eval_score
                 best_move = move
+                if visualize and main_game is not None:
+                    # Show red marker for current best
+                    main_game.show_visual_move(i, j, color="red")
+
             alpha = max(alpha, eval_score)
             if beta <= alpha:
                 break
         result = (max_eval, best_move)
+
     else:
         min_eval = float('inf')
         for new_game, move in all_boards:
-            eval_score, _ = minmax(new_game, depth - 1, alpha, beta, True)
+            i, j = move
+            if visualize and main_game is not None:
+                main_game.show_visual_move(i, j, color="blue")
+                if main_game.root is not None:
+                    main_game.root.update_idletasks()
+                # time.sleep(5)
+
+            eval_score, _ = minmax(new_game, depth - 1, alpha, beta, True, visualize)
+
+            if visualize and main_game is not None:
+                main_game.remove_visual_move(i, j)
+
             if eval_score < min_eval:
                 min_eval = eval_score
                 best_move = move
+                if visualize and main_game is not None:
+                    main_game.show_visual_move(i, j, color="red")
+
             beta = min(beta, eval_score)
             if beta <= alpha:
                 break
         result = (min_eval, best_move)
 
+    if visualize and main_game is not None:
+        main_game.clear_visual_markers_by_color("red")
     transposition_table[state_key] = result
     return result

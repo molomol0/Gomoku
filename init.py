@@ -1,4 +1,5 @@
 import copy
+import time
 
 class GomokuGame:
     def __init__(self):
@@ -8,6 +9,9 @@ class GomokuGame:
         self.current_player = 1  # 1=black, 2=white
         self.taken_stones = [0, 0] # first stone taken by black, second is by white
         self.stone_ids = [[None for _ in range(self.board_size)] for _ in range(self.board_size)]
+        self.visual_markers = {}
+        self.canvas = None  # Placeholder for the Tkinter canvas, to be set later
+        self.root = None  # Placeholder for the Tkinter root, to be set later
         # Rules
         self.rule_center_opening = True
         self.rule_no_double_threes = True
@@ -27,6 +31,46 @@ class GomokuGame:
         new_game.rule_captures = self.rule_captures
         return new_game
     
+    def show_visual_move(self, i, j, color="blue"):
+        if self.canvas is None:
+            return
+        x = self.cell_size + j * self.cell_size
+        y = self.cell_size + i * self.cell_size
+        radius = self.cell_size // 5
+        marker = self.canvas.create_oval(
+            x - radius, y - radius, x + radius, y + radius,
+            fill=color, outline=""
+        )
+        if (i, j, color) not in self.visual_markers:
+            self.visual_markers[(i, j, color)] = []
+        self.visual_markers[(i, j, color)].append(marker)
+        self.root.update()  # Update the GUI to show the marker immediately
+        # time.sleep(0.05)
+    
+    def clear_visual_markers_by_color(self, color):
+        if self.canvas is None:
+            return
+        keys_to_remove = []
+        for (i, j, marker_color), markers in self.visual_markers.items():
+            if marker_color == color:
+                for marker in markers:
+                    self.canvas.delete(marker)
+                keys_to_remove.append((i, j, marker_color))
+        for key in keys_to_remove:
+            del self.visual_markers[key]
+        self.root.update()
+
+
+    def remove_visual_move(self, i, j):
+        if self.canvas is None:
+            return
+        for color in ("blue", "red"):
+            markers = self.visual_markers.pop((i, j, color), None)
+            if markers:
+                for marker in markers:
+                    self.canvas.delete(marker)
+        self.root.update()  # Update the GUI to remove the marker immediately
+
 
     def capture_stone(self, row, col):
         directions = [
