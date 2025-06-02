@@ -1,9 +1,8 @@
 import tkinter as tk
-import copy
 import time
 from init import GomokuGame
 from gui_helper import erase_stone
-from minmax import minmax  # Use the optimized version
+from minmax import minmax
 
 game = GomokuGame()
 game.root = tk.Tk()
