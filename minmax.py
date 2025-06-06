@@ -1,391 +1,555 @@
+# Ultra-Optimized Aggressive Gomoku AI Engine
+# Focused on speed and winning, not just defense
+
 import time
-import copy
+from functools import lru_cache
 
-# Global transposition table with size limit
-MAX_TT_SIZE = 2000000  # Increased size
+# Global configuration
+MAX_TT_SIZE = 500000
+INFINITY = 1000000
+DIRECTIONS = [(1, 0), (0, 1), (1, 1), (1, -1)]
+
+# Global caches
 transposition_table = {}
+pattern_cache = {}
 
-# Cache for move generation to avoid recomputing
-move_cache = {}
-MAX_MOVE_CACHE_SIZE = 100000
-
-def clear_transposition_table():
-    global transposition_table
-    if len(transposition_table) > MAX_TT_SIZE:
-        transposition_table.clear()
-
-def clear_move_cache():
-    global move_cache
-    if len(move_cache) > MAX_MOVE_CACHE_SIZE:
-        move_cache.clear()
-
-def board_hash(game):
-    # More efficient hashing using only relevant board positions
-    board_tuple = tuple(tuple(row) for row in game.board)
-    return hash((board_tuple, tuple(game.taken_stones), game.current_player))
-
-def check_line_fast(board, row, col, dx, dy, size, target_count=5):
-    """Ultra-fast line checking with early termination"""
-    if board[row][col] == 0:
-        return 0
+class FastPatternDetector:
+    """Ultra-fast pattern detection with minimal function calls"""
     
-    player = board[row][col]
-    count = 1
+    # Aggressive pattern values - prioritize winning over defense
+    PATTERN_SCORES = {
+        5: 100000,    # Win
+        4: 50000,     # Four in a row
+        3: 8000,      # Three in a row  
+        2: 800,       # Two in a row
+        1: 80         # Single stone
+    }
     
-    # Positive direction - unrolled for speed
-    r, c = row + dx, col + dy
-    if 0 <= r < size and 0 <= c < size and board[r][c] == player:
-        count += 1
-        r, c = r + dx, c + dy
-        if 0 <= r < size and 0 <= c < size and board[r][c] == player:
-            count += 1
-            r, c = r + dx, c + dy
-            if 0 <= r < size and 0 <= c < size and board[r][c] == player:
-                count += 1
-                r, c = r + dx, c + dy
-                if 0 <= r < size and 0 <= c < size and board[r][c] == player:
+    OPEN_MULTIPLIERS = {
+        2: 3.0,   # Both ends open
+        1: 1.5,   # One end open
+        0: 0.3    # No ends open
+    }
+    
+    @staticmethod
+    def count_consecutive_fast(board, row, col, dx, dy, player, board_size):
+        """Ultra-fast consecutive counting with single loop"""
+        if board[row][col] != player:
+            return 0, 0
+            
+        # Count positive direction
+        pos_count = 0
+        r, c = row + dx, col + dy
+        while 0 <= r < board_size and 0 <= c < board_size and board[r][c] == player:
+            pos_count += 1
+            r += dx
+            c += dy
+        
+        # Count negative direction
+        neg_count = 0
+        r, c = row - dx, col - dy
+        while 0 <= r < board_size and 0 <= c < board_size and board[r][c] == player:
+            neg_count += 1
+            r -= dx
+            c -= dy
+            
+        return pos_count, neg_count
+    
+    @staticmethod
+    def evaluate_line_fast(board, row, col, dx, dy, player, board_size):
+        """Fast line evaluation with minimal calculations"""
+        pos_count, neg_count = FastPatternDetector.count_consecutive_fast(
+            board, row, col, dx, dy, player, board_size)
+        
+        total_count = pos_count + neg_count + 1
+        
+        if total_count < 2:
+            return 0
+            
+        # Quick open end check
+        open_ends = 0
+        
+        # Check positive end
+        end_r, end_c = row + dx * (pos_count + 1), col + dy * (pos_count + 1)
+        if 0 <= end_r < board_size and 0 <= end_c < board_size and board[end_r][end_c] == 0:
+            open_ends += 1
+            
+        # Check negative end  
+        end_r, end_c = row - dx * (neg_count + 1), col - dy * (neg_count + 1)
+        if 0 <= end_r < board_size and 0 <= end_c < board_size and board[end_r][end_c] == 0:
+            open_ends += 1
+        
+        # Calculate score
+        base_score = FastPatternDetector.PATTERN_SCORES.get(min(total_count, 5), 0)
+        multiplier = FastPatternDetector.OPEN_MULTIPLIERS.get(open_ends, 1.0)
+        
+        return int(base_score * multiplier)
+
+    
+    @staticmethod
+    def evaluate_directions_fast(board, row, col, player, board_size):
+        """Evaluate all directions for a position and return max_score, threat_count"""
+        max_score = 0
+        threat_count = 0
+        for dx, dy in DIRECTIONS:
+            score = FastPatternDetector.evaluate_line_fast(board, row, col, dx, dy, player, board_size)
+            if score >= 100000:  # Winning move
+                return INFINITY, threat_count
+            elif score >= 8000:  # Strong threat
+                threat_count += 1
+            max_score = max(max_score, score)
+        return max_score, threat_count
+
+    @staticmethod
+    def evaluate_position_fast(board, row, col, player, board_size):
+        """Ultra-fast position evaluation"""
+        if board[row][col] != 0:
+            return 0
+
+        # Use pattern cache
+        cache_key = (row, col, player, hash(tuple(tuple(r) for r in board)))
+        if cache_key in pattern_cache:
+            return pattern_cache[cache_key]
+
+        board[row][col] = player
+
+        # Refactored: call the new function
+        max_score, threat_count = FastPatternDetector.evaluate_directions_fast(
+            board, row, col, player, board_size
+        )
+
+        if max_score >= INFINITY:
+            board[row][col] = 0
+            pattern_cache[cache_key] = INFINITY
+            return INFINITY
+
+        # Massive bonus for multiple threats (winning tactic)
+        if threat_count >= 2:
+            max_score += 30000
+        elif threat_count == 1:
+            max_score += 5000
+
+        board[row][col] = 0
+
+        # Clean cache if too large
+        if len(pattern_cache) > 10000:
+            pattern_cache.clear()
+
+        pattern_cache[cache_key] = max_score
+        return max_score
+
+class AggressiveMoveGenerator:
+    """Move generation focused on winning quickly"""
+    
+    @staticmethod
+    def get_neighbor_positions(board, board_size, radius=2):
+        """Get positions near existing stones"""
+        positions = []
+        seen = set()
+        
+        for i in range(board_size):
+            for j in range(board_size):
+                if board[i][j] != 0:
+                    # Add neighbors
+                    for di in range(-radius, radius + 1):
+                        for dj in range(-radius, radius + 1):
+                            if di == 0 and dj == 0:
+                                continue
+                            ni, nj = i + di, j + dj
+                            if (0 <= ni < board_size and 0 <= nj < board_size and 
+                                board[ni][nj] == 0 and (ni, nj) not in seen):
+                                positions.append((ni, nj))
+                                seen.add((ni, nj))
+        
+        return positions
+    
+    @staticmethod
+    def find_winning_moves(board, board_size, player):
+        """Find immediate winning moves"""
+        winning_moves = []
+        
+        for i in range(board_size):
+            for j in range(board_size):
+                if board[i][j] == 0:
+                    score = FastPatternDetector.evaluate_position_fast(board, i, j, player, board_size)
+                    if score >= INFINITY:
+                        winning_moves.append((i, j, score))
+        
+        return winning_moves
+    
+    @staticmethod
+    def find_threat_moves(board, board_size, player, min_threat=8000):
+        """Find moves that create threats"""
+        threat_moves = []
+        
+        # Only check promising positions
+        candidates = AggressiveMoveGenerator.get_neighbor_positions(board, board_size, 2)
+        
+        for row, col in candidates:
+            score = FastPatternDetector.evaluate_position_fast(board, row, col, player, board_size)
+            if score >= min_threat:
+                threat_moves.append((row, col, score))
+        
+        return sorted(threat_moves, key=lambda x: x[2], reverse=True)
+    
+    @staticmethod
+    def generate_moves_ultra_fast(game, max_moves=12):
+        """Ultra-fast move generation with aggressive prioritization"""
+        board = game.board
+        board_size = game.board_size
+        current_player = game.current_player
+        opponent = 3 - current_player
+        
+        # First move optimization
+        if all(board[i][j] == 0 for i in range(board_size) for j in range(board_size)):
+            center = board_size // 2
+            return [(center, center)]
+        
+        # 1. Check for immediate wins (TOP PRIORITY)
+        winning_moves = AggressiveMoveGenerator.find_winning_moves(board, board_size, current_player)
+        if winning_moves:
+            return [(move[0], move[1]) for move in winning_moves[:1]]  # Take first win
+        
+        # 2. Block opponent wins (CRITICAL DEFENSE)
+        opponent_wins = AggressiveMoveGenerator.find_winning_moves(board, board_size, opponent)
+        if opponent_wins:
+            return [(move[0], move[1]) for move in opponent_wins[:3]]  # Block up to 3 wins
+        
+        # 3. Create strong threats (AGGRESSIVE OFFENSE)
+        our_threats = AggressiveMoveGenerator.find_threat_moves(board, board_size, current_player, 8000)
+        if our_threats:
+            moves = [(move[0], move[1]) for move in our_threats[:max_moves//2]]
+            if len(moves) >= max_moves//3:  # If we have good threats, focus on them
+                return moves
+        
+        # 4. Block opponent threats (TACTICAL DEFENSE)
+        opponent_threats = AggressiveMoveGenerator.find_threat_moves(board, board_size, opponent, 8000)
+        
+        # 5. Combine offensive and defensive moves
+        all_moves = []
+        
+        # Add our best threats
+        all_moves.extend([(move[0], move[1], move[2] * 1.2) for move in our_threats[:max_moves//2]])
+        
+        # Add opponent threat blocks
+        all_moves.extend([(move[0], move[1], move[2]) for move in opponent_threats[:max_moves//2]])
+        
+        # If we don't have enough moves, add some tactical moves
+        if len(all_moves) < max_moves:
+            tactical_moves = AggressiveMoveGenerator.find_threat_moves(board, board_size, current_player, 800)
+            all_moves.extend([(move[0], move[1], move[2] * 0.8) for move in tactical_moves[:max_moves]])
+        
+        # Sort by score and return
+        all_moves.sort(key=lambda x: x[2], reverse=True)
+        result = [(move[0], move[1]) for move in all_moves[:max_moves]]
+        
+        # Fallback
+        if not result:
+            candidates = AggressiveMoveGenerator.get_neighbor_positions(board, board_size, 2)
+            result = candidates[:max_moves] if candidates else [(board_size//2, board_size//2)]
+        
+        return result
+
+class UltraFastEvaluator:
+    """Minimal evaluation focused on speed"""
+    
+    @staticmethod
+    def is_terminal_fast(game, last_move=None):
+        """Ultra-fast terminal check"""
+        # Check captures
+        if hasattr(game, 'taken_stones'):
+            if max(game.taken_stones) >= 10:
+                return True
+        
+        # Check five in a row from last move only
+        if last_move:
+            row, col = last_move
+            if game.board[row][col] == 0:
+                return False
+                
+            player = game.board[row][col]
+            board_size = game.board_size
+            
+            for dx, dy in DIRECTIONS:
+                count = 1
+                
+                # Positive direction
+                r, c = row + dx, col + dy
+                while 0 <= r < board_size and 0 <= c < board_size and game.board[r][c] == player:
                     count += 1
-                    # Continue if we need more than 5
-                    while count < target_count and 0 <= r + dx < size and 0 <= c + dy < size and board[r + dx][c + dy] == player:
-                        count += 1
-                        r, c = r + dx, c + dy
-    
-    # Negative direction - unrolled for speed
-    r, c = row - dx, col - dy
-    if 0 <= r < size and 0 <= c < size and board[r][c] == player:
-        count += 1
-        r, c = r - dx, c - dy
-        if 0 <= r < size and 0 <= c < size and board[r][c] == player:
-            count += 1
-            r, c = r - dx, c - dy
-            if 0 <= r < size and 0 <= c < size and board[r][c] == player:
-                count += 1
-                r, c = r - dx, c - dy
-                if 0 <= r < size and 0 <= c < size and board[r][c] == player:
+                    r += dx
+                    c += dy
+                    if count >= 5:
+                        return True
+                
+                # Negative direction
+                r, c = row - dx, col - dy
+                while 0 <= r < board_size and 0 <= c < board_size and game.board[r][c] == player:
                     count += 1
-                    # Continue if we need more than 5
-                    while count < target_count and 0 <= r - dx < size and 0 <= c - dy < size and board[r - dx][c - dy] == player:
-                        count += 1
-                        r, c = r - dx, c - dy
-    
-    return count
-
-def check_five_in_row_from_position(board, row, col, size):
-    """Optimized 5-in-a-row check with early termination"""
-    if board[row][col] == 0:
+                    r -= dx
+                    c -= dy
+                    if count >= 5:
+                        return True
+        
         return False
     
-    # Check each direction - return immediately on finding 5
-    directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]
-    for dx, dy in directions:
-        if check_line_fast(board, row, col, dx, dy, size, 5) >= 5:
-            return True
-    
-    return False
-
-def game_over_incremental(game, last_move=None):
-    """Optimized game_over check using last move position"""
-    # Check captures first (faster and doesn't depend on position)
-    if game.taken_stones[0] >= 10 or game.taken_stones[1] >= 10:
-        return True
-    
-    # If no last move provided, fall back to full board check
-    if last_move is None:
-        return game_over_full_board(game)
-    
-    # Only check 5-in-a-row from the last move position
-    row, col = last_move
-    return check_five_in_row_from_position(game.board, row, col, game.board_size)
-
-def game_over_full_board(game):
-    """Original full board check - fallback method"""
-    board = game.board
-    size = game.board_size
-    directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]
-    
-    for i in range(size):
-        for j in range(size):
-            if board[i][j] == 0:
-                continue
+    @staticmethod
+    def evaluate_fast(game, last_move=None):
+        """Lightning-fast evaluation"""
+        if UltraFastEvaluator.is_terminal_fast(game, last_move):
+            # Determine winner
+            if hasattr(game, 'taken_stones'):
+                if game.taken_stones[0] >= 10:
+                    return INFINITY if game.current_player == 2 else -INFINITY
+                elif game.taken_stones[1] >= 10:
+                    return INFINITY if game.current_player == 1 else -INFINITY
             
-            for dx, dy in directions:
-                if check_line_fast(board, i, j, dx, dy, size, 5) >= 5:
-                    return True
-    return False
-
-def game_over(game, last_move=None):
-    """Main game_over function with incremental optimization"""
-    return game_over_incremental(game, last_move)
-
-def evaluate_position_fast(board, row, col, size, player, opponent):
-    """Ultra-fast position evaluation with pattern scoring"""
-    if board[row][col] == 0:
-        return 0
-    
-    stone_player = board[row][col]
-    multiplier = 1 if stone_player == player else -1
-    score = 0
-    
-    directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
-    
-    for dx, dy in directions:
-        count = check_line_fast(board, row, col, dx, dy, size, 6)
+            # Five in a row win
+            if last_move:
+                return INFINITY if game.board[last_move[0]][last_move[1]] == (3 - game.current_player) else -INFINITY
         
-        if count >= 5:
-            return multiplier * 100000  # Immediate win/loss
-        elif count == 4:
-            score += multiplier * 10000
-        elif count == 3:
-            score += multiplier * 1000
-        elif count == 2:
-            score += multiplier * 100
-    
-    return score
+        # Quick positional evaluation
+        score = 0
+        board = game.board
+        board_size = game.board_size
+        
+        # Simple material and position evaluation
+        for i in range(board_size):
+            for j in range(board_size):
+                if board[i][j] != 0:
+                    player = board[i][j]
+                    multiplier = 1 if player == 1 else -1
+                    
+                    # Quick pattern check
+                    position_value = 0
+                    for dx, dy in DIRECTIONS:
+                        line_score = FastPatternDetector.evaluate_line_fast(board, i, j, dx, dy, player, board_size)
+                        position_value = max(position_value, line_score)
+                    
+                    score += multiplier * position_value
+        
+        # Capture bonus
+        if hasattr(game, 'taken_stones'):
+            score += (game.taken_stones[0] - game.taken_stones[1]) * 2000
+        
+        return score
 
-def evaluate_fast_full(game):
-    """Optimized full board evaluation"""
-    player = 3 - game.current_player
-    opponent = 3 - player
-    board = game.board
-    size = game.board_size
+class UltraFastMinimax:
+    """Hyper-optimized minimax with aggressive pruning"""
     
-    # Quick capture check
-    capture_diff = (game.taken_stones[player - 1] - game.taken_stones[opponent - 1]) * 1000
-    if abs(capture_diff) > 5000:  # Near capture win
-        return capture_diff
+    def __init__(self):
+        self.nodes_searched = 0
+        self.cache_hits = 0
+        self.pruned = 0
     
-    score = capture_diff
+    def get_best_move(self, game, depth=5, visualize=False, main_game=None):
+        """Get best move with time optimization"""
+        self.nodes_searched = 0
+        self.cache_hits = 0
+        self.pruned = 0
+        
+        start_time = time.time()
+        
+        # Quick win check
+        winning_moves = AggressiveMoveGenerator.find_winning_moves(game.board, game.board_size, game.current_player)
+        if winning_moves:
+            move = (winning_moves[0][0], winning_moves[0][1])
+            print(f"Immediate win found: {move}")
+            return INFINITY, move
+        
+        # Quick defense check
+        opponent = 3 - game.current_player
+        opponent_wins = AggressiveMoveGenerator.find_winning_moves(game.board, game.board_size, opponent)
+        if opponent_wins:
+            move = (opponent_wins[0][0], opponent_wins[0][1])
+            print(f"Blocking opponent win: {move}")
+            return -INFINITY + 1, move
+        
+        score, move = self.minimax_ultra(game, depth, -INFINITY, INFINITY, True, visualize, main_game)
+        end_time = time.time()
+        
+        # Safety check
+        if move is None:
+            print("WARNING: No move found, using fallback")
+            moves = AggressiveMoveGenerator.generate_moves_ultra_fast(game, 1)
+            move = moves[0] if moves else (game.board_size // 2, game.board_size // 2)
+        
+        print(f"Search: {self.nodes_searched} nodes, {self.cache_hits} hits, {self.pruned} pruned, {end_time - start_time:.2f}s")
+        return score, move
     
-    # Pattern evaluation - optimized loop
-    for i in range(size):
-        for j in range(size):
-            if board[i][j] != 0:
-                score += evaluate_position_fast(board, i, j, size, player, opponent)
+    def minimax_ultra(self, game, depth, alpha, beta, maximizing_player, visualize=False, main_game=None, last_move=None):
+        """Ultra-optimized minimax"""
+        self.nodes_searched += 1
+        
+        # Clean cache periodically
+        if len(transposition_table) > MAX_TT_SIZE:
+            transposition_table.clear()
+        
+        # Transposition table lookup
+        state_key = self.hash_game_fast(game)
+        if state_key in transposition_table:
+            stored_depth, stored_score, stored_move = transposition_table[state_key]
+            if stored_depth >= depth:
+                self.cache_hits += 1
+                return stored_score, stored_move
+        
+        # Terminal check
+        if depth == 0 or UltraFastEvaluator.is_terminal_fast(game, last_move):
+            score = UltraFastEvaluator.evaluate_fast(game, last_move)
+            transposition_table[state_key] = (depth, score, None)
+            return score, None
+        
+        # Aggressive move count reduction
+        move_count = max(6, min(15, 20 - depth * 2))
+        moves = AggressiveMoveGenerator.generate_moves_ultra_fast(game, move_count)
+        
+        if not moves:
+            score = UltraFastEvaluator.evaluate_fast(game, last_move)
+            return score, None
+        
+        best_move = moves[0]
+        
+        if maximizing_player:
+            max_eval = -INFINITY
+            
+            for i, move in enumerate(moves):
+                row, col = move
+                
+                # Make move
+                new_game = self.clone_game_fast(game)
+                captured, error = new_game.place_stone(row, col)
+                if error:
+                    continue
+                
+                # Visualization
+                if visualize and main_game:
+                    main_game.show_visual_move(row, col, color="blue")
+                
+                # Recursive call
+                eval_score, _ = self.minimax_ultra(new_game, depth - 1, alpha, beta, False, 
+                                                 visualize, main_game, (row, col))
+                
+                # Remove visualization
+                if visualize and main_game:
+                    main_game.remove_visual_move(row, col)
+                
+                if eval_score > max_eval:
+                    max_eval = eval_score
+                    best_move = move
+                    
+                    if visualize and main_game:
+                        main_game.show_visual_move(row, col, color="red")
+                
+                alpha = max(alpha, eval_score)
+                if beta <= alpha:
+                    self.pruned += len(moves) - i - 1
+                    break  # Alpha-beta pruning
+            
+            result = (max_eval, best_move)
+        else:
+            min_eval = INFINITY
+            
+            for i, move in enumerate(moves):
+                row, col = move
+                
+                # Make move
+                new_game = self.clone_game_fast(game)
+                captured, error = new_game.place_stone(row, col)
+                if error:
+                    continue
+                
+                # Visualization
+                if visualize and main_game:
+                    main_game.show_visual_move(row, col, color="blue")
+                
+                # Recursive call
+                eval_score, _ = self.minimax_ultra(new_game, depth - 1, alpha, beta, True, 
+                                                 visualize, main_game, (row, col))
+                
+                # Remove visualization
+                if visualize and main_game:
+                    main_game.remove_visual_move(row, col)
+                
+                if eval_score < min_eval:
+                    min_eval = eval_score
+                    best_move = move
+                    
+                    if visualize and main_game:
+                        main_game.show_visual_move(row, col, color="red")
+                
+                beta = min(beta, eval_score)
+                if beta <= alpha:
+                    self.pruned += len(moves) - i - 1
+                    break  # Alpha-beta pruning
+            
+            result = (min_eval, best_move)
+        
+        # Store in transposition table
+        transposition_table[state_key] = (depth, result[0], result[1])
+        
+        # Clear visualization
+        if visualize and main_game:
+            main_game.clear_visual_markers_by_color("red")
+        
+        return result
     
-    return score
+    def hash_game_fast(self, game):
+        """Fast game hashing"""
+        # Use a simpler hash for speed
+        board_hash = 0
+        for i, row in enumerate(game.board):
+            for j, cell in enumerate(row):
+                if cell != 0:
+                    board_hash ^= hash((i, j, cell))
+        
+        taken_hash = hash(tuple(getattr(game, 'taken_stones', [0, 0])))
+        return hash((board_hash, taken_hash, game.current_player))
+    
+    def clone_game_fast(self, game):
+        """Ultra-fast game cloning"""
+        new_game = game.__class__()
+        new_game.board_size = game.board_size
+        new_game.cell_size = getattr(game, 'cell_size', 40)
+        new_game.board = [row[:] for row in game.board]
+        new_game.taken_stones = getattr(game, 'taken_stones', [0, 0])[:]
+        new_game.current_player = game.current_player
+        
+        # Essential rules only
+        new_game.rule_captures = getattr(game, 'rule_captures', True)
+        
+        return new_game
+
+# Global AI instance
+ai = UltraFastMinimax()
+
+# Legacy function wrappers for compatibility
+def minmax(game, depth, alpha, beta, maximizing_player, visualize=False, main_game=None, last_move=None, previous_score=None):
+    """Legacy wrapper for minimax function"""
+    return ai.minimax_ultra(game, depth, alpha, beta, maximizing_player, visualize, main_game, last_move)
+
+def generate_smart_moves(game, max_moves=12):
+    """Legacy wrapper for move generation"""
+    return AggressiveMoveGenerator.generate_moves_ultra_fast(game, max_moves)
 
 def evaluate_fast(game, last_move=None, previous_score=None):
-    """Main evaluation function"""
-    # Check for terminal states first
-    if game_over_incremental(game, last_move):
-        player = 3 - game.current_player
-        if game.taken_stones[0] >= 10 or game.taken_stones[1] >= 10:
-            if game.taken_stones[player - 1] >= 10:
-                return 1000000
-            else:
-                return -1000000
-        return 1000000 if game.current_player != player else -1000000
-    
-    return evaluate_fast_full(game)
+    """Legacy wrapper for evaluation"""
+    return UltraFastEvaluator.evaluate_fast(game, last_move)
 
-def get_adjacent_positions(board, size, radius=2):
-    """Get positions adjacent to existing stones - cached version"""
-    positions = set()
-    
-    for i in range(size):
-        for j in range(size):
-            if board[i][j] != 0:
-                # Add adjacent positions in radius
-                for di in range(-radius, radius + 1):
-                    for dj in range(-radius, radius + 1):
-                        ni, nj = i + di, j + dj
-                        if (0 <= ni < size and 0 <= nj < size and 
-                            board[ni][nj] == 0):
-                            positions.add((ni, nj))
-    
-    return list(positions)
+def game_over(game, last_move=None):
+    """Legacy wrapper for terminal check"""
+    return UltraFastEvaluator.is_terminal_fast(game, last_move)
 
-def is_critical_move(board, row, col, player, size):
-    """Check if move is critical (wins or blocks win) - optimized"""
-    # Temporarily place stone
-    board[row][col] = player
-    
-    # Check for immediate win
-    if check_five_in_row_from_position(board, row, col, size):
-        board[row][col] = 0
-        return 3  # Immediate win
-    
-    # Check for 4-in-a-row threat
-    threat_level = 0
-    directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]
-    for dx, dy in directions:
-        count = check_line_fast(board, row, col, dx, dy, size, 4)
-        if count >= 4:
-            threat_level = 2  # Creates threat
-            break
-        elif count == 3:
-            threat_level = max(threat_level, 1)  # Good move
-    
-    board[row][col] = 0
-    return threat_level
+def clear_transposition_table():
+    """Clear the transposition table"""
+    global transposition_table
+    transposition_table.clear()
 
-def generate_smart_moves(game, max_moves=15):
-    """Highly optimized move generation with aggressive pruning"""
-    board = game.board
-    size = game.board_size
-    
-    # First move - center
-    if not any(board[i][j] != 0 for i in range(size) for j in range(size)):
-        center = size // 2
-        return [(center, center)]
-    
-    # Use cache for repeated positions
-    board_key = hash(tuple(tuple(row) for row in board))
-    if board_key in move_cache:
-        cached_moves, cached_player = move_cache[board_key]
-        if cached_player == game.current_player:
-            return cached_moves[:max_moves]
-    
-    clear_move_cache()  # Prevent memory overflow
-    
-    current_player = game.current_player
-    opponent = 3 - current_player
-    
-    # Get candidate positions
-    candidates = get_adjacent_positions(board, size, radius=2)
-    
-    if not candidates:
-        return []
-    
-    # Score moves by criticality
-    scored_moves = []
-    
-    for row, col in candidates:
-        # Check current player moves
-        current_score = is_critical_move(board, row, col, current_player, size)
-        
-        # Check opponent moves (defensive)
-        opponent_score = is_critical_move(board, row, col, opponent, size)
-        
-        # Combined score with priority for winning moves
-        total_score = current_score * 1000 + opponent_score * 100
-        
-        if total_score > 0:
-            scored_moves.append((row, col, total_score))
-    
-    # Sort by score and return best moves
-    scored_moves.sort(key=lambda x: x[2], reverse=True)
-    best_moves = [move[:2] for move in scored_moves[:max_moves]]
-    
-    # Cache the result
-    move_cache[board_key] = (best_moves, current_player)
-    
-    return best_moves if best_moves else candidates[:max_moves]
+def clear_move_cache():
+    """Clear the pattern cache"""
+    global pattern_cache
+    pattern_cache.clear()
 
-def clone_game_fast(game):
-    """Optimized game cloning"""
-    new_game = game.__class__()
-    new_game.board_size = game.board_size
-    new_game.cell_size = game.cell_size
-    new_game.board = [row[:] for row in game.board]  # List comprehension is faster
-    new_game.taken_stones = game.taken_stones[:]
-    new_game.current_player = game.current_player
-    new_game.rule_center_opening = game.rule_center_opening
-    new_game.rule_no_double_threes = game.rule_no_double_threes
-    new_game.rule_captures = game.rule_captures
-    return new_game
-
-def minmax_optimized(game, depth, alpha, beta, maximizing_player, visualize=False, main_game=None, last_move=None, previous_score=None):
-    """Ultra-optimized minimax with aggressive pruning"""
-    # Manage transposition table size
-    if len(transposition_table) > MAX_TT_SIZE:
-        clear_transposition_table()
-    
-    # Transposition table lookup
-    state_key = board_hash(game)
-    if state_key in transposition_table:
-        stored_depth, stored_score, stored_move = transposition_table[state_key]
-        if stored_depth >= depth:
-            return stored_score, stored_move
-    
-    # Terminal node check
-    if depth == 0 or game_over(game, last_move):
-        score = evaluate_fast(game, last_move, previous_score)
-        transposition_table[state_key] = (depth, score, None)
-        return score, None
-    
-    # Generate moves with adaptive count based on depth
-    move_count = max(6, 12 - depth)  # Fewer moves at deeper levels
-    moves = generate_smart_moves(game, max_moves=move_count)
-    
-    if not moves:
-        score = evaluate_fast(game, last_move, previous_score)
-        transposition_table[state_key] = (depth, score, None)
-        return score, None
-    
-    best_move = moves[0]
-    
-    if maximizing_player:
-        max_eval = -float('inf')
-        
-        for move in moves:
-            i, j = move
-            
-            new_game = clone_game_fast(game)
-            captured, error = new_game.place_stone(i, j)
-            if error:
-                continue
-            
-            if visualize and main_game is not None:
-                main_game.show_visual_move(i, j, color="blue")
-            
-            eval_score, _ = minmax_optimized(new_game, depth - 1, alpha, beta, False, 
-                                           visualize, main_game, (i, j), None)
-            
-            if visualize and main_game is not None:
-                main_game.remove_visual_move(i, j)
-            
-            if eval_score > max_eval:
-                max_eval = eval_score
-                best_move = move
-                if visualize and main_game is not None:
-                    main_game.show_visual_move(i, j, color="red")
-            
-            alpha = max(alpha, eval_score)
-            if beta <= alpha:  # Alpha-beta pruning
-                break
-        
-        result = (max_eval, best_move)
-    else:
-        min_eval = float('inf')
-        
-        for move in moves:
-            i, j = move
-            
-            new_game = clone_game_fast(game)
-            captured, error = new_game.place_stone(i, j)
-            if error:
-                continue
-            
-            if visualize and main_game is not None:
-                main_game.show_visual_move(i, j, color="blue")
-            
-            eval_score, _ = minmax_optimized(new_game, depth - 1, alpha, beta, True, 
-                                           visualize, main_game, (i, j), None)
-            
-            if visualize and main_game is not None:
-                main_game.remove_visual_move(i, j)
-            
-            if eval_score < min_eval:
-                min_eval = eval_score
-                best_move = move
-                if visualize and main_game is not None:
-                    main_game.show_visual_move(i, j, color="red")
-            
-            beta = min(beta, eval_score)
-            if beta <= alpha:  # Alpha-beta pruning
-                break
-        
-        result = (min_eval, best_move)
-    
-    # Store in transposition table
-    transposition_table[state_key] = (depth, result[0], result[1])
-    
-    if visualize and main_game is not None:
-        main_game.clear_visual_markers_by_color("red")
-    
-    return result
-
-def minmax(game, depth, alpha, beta, maximizing_player, visualize=False, main_game=None, last_move=None, previous_score=None):
-    """Main minimax entry point"""
-    return minmax_optimized(game, depth, alpha, beta, maximizing_player, visualize, main_game, last_move, previous_score)
+# Main AI interface
+def get_ai_move(game, difficulty=5, visualize=False, main_game=None):
+    """Get AI move with specified difficulty (depth)"""
+    return ai.get_best_move(game, difficulty, visualize, main_game)

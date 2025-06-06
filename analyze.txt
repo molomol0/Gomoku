@@ -1,39 +1,45 @@
     ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1   19.516   19.516   27.464   27.464 {method 'mainloop' of '_tkinter.tkapp' objects}
-  6901612    2.524    0.000    2.524    0.000 minmax.py:27(check_line_fast)
-    90687    1.744    0.000    1.744    0.000 {method 'call' of '_tkinter.tkapp' objects}
-    58373    0.632    0.000    0.661    0.000 init.py:123(count_open_threes_in_line)
-   822072    0.596    0.000    3.405    0.000 minmax.py:198(is_critical_move)
-   836131    0.434    0.000    1.661    0.000 minmax.py:73(check_five_in_row_from_position)
-     6009    0.315    0.000    0.360    0.000 minmax.py:181(get_adjacent_positions)
-     6272    0.150    0.000    4.043    0.001 minmax.py:222(generate_smart_moves)
-   242843    0.136    0.000    0.306    0.000 {built-in method builtins.all}
-    14580    0.113    0.000    0.285    0.000 init.py:75(capture_stone)
-        1    0.109    0.109    0.109    0.109 {built-in method _tkinter.create}
-     7578    0.107    0.000    0.270    0.000 minmax.py:145(evaluate_fast_full)
-  14579/8    0.092    0.000    7.935    0.992 minmax.py:288(minmax_optimized)
-  1479790    0.071    0.000    0.071    0.000 init.py:183(<genexpr>)
-   992407    0.063    0.000    0.063    0.000 minmax.py:228(<genexpr>)
-    14596    0.058    0.000    0.147    0.000 init.py:8(<listcomp>)
-    68137    0.056    0.000    0.162    0.000 minmax.py:120(evaluate_position_fast)
-   460140    0.052    0.000    0.052    0.000 init.py:93(<genexpr>)
-    14596    0.050    0.000    0.134    0.000 init.py:11(<listcomp>)
-   460140    0.049    0.000    0.049    0.000 init.py:111(<genexpr>)
-   931889    0.045    0.000    0.045    0.000 {method 'add' of 'set' objects}
-     6273    0.044    0.000    0.106    0.000 {built-in method builtins.any}
-    23244    0.039    0.000    1.242    0.000 init.py:34(show_visual_move)
-    23329    0.035    0.000    0.074    0.000 __init__.py:1497(_options)
-    23299    0.029    0.000    0.208    0.000 __init__.py:2797(_create)
-   683166    0.029    0.000    0.029    0.000 {method 'append' of 'list' objects}
-    14579    0.027    0.000    0.062    0.000 minmax.py:22(board_hash)
-    14587    0.027    0.000    0.027    0.000 minmax.py:280(<listcomp>)
-    14587    0.024    0.000    0.349    0.000 minmax.py:275(clone_game_fast)
-   291580    0.023    0.000    0.023    0.000 minmax.py:24(<genexpr>)
-    14596    0.022    0.000    0.684    0.000 init.py:160(is_double_free_three)
-    23356    0.021    0.000    0.031    0.000 __init__.py:101(_cnfmerge)
-    14571    0.019    0.000    0.471    0.000 init.py:64(remove_visual_move)
-    14596    0.019    0.000    1.123    0.000 init.py:179(place_stone)
-    14596    0.018    0.000    0.299    0.000 init.py:5(__init__)
-    20851    0.016    0.000    0.016    0.000 {built-in method builtins.hash}
-    44077    0.014    0.000    1.619    0.000 __init__.py:1341(update)
-     6262    0.012    0.000    0.223    0.000 init.py:50(clear_visual_markers_by_color)
+        1    7.514    7.514   30.488   30.488 {method 'mainloop' of '_tkinter.tkapp' objects}
+  2647268    5.412    0.000   18.254    0.000 minmax.py:103(evaluate_position_fast)
+ 52945360    3.260    0.000    3.260    0.000 minmax.py:110(<genexpr>)
+  9357048    3.211    0.000    3.211    0.000 minmax.py:34(count_consecutive_fast)
+  2278287    2.185    0.000    7.908    0.000 minmax.py:89(evaluate_directions_fast)
+  9357048    1.971    0.000    5.220    0.000 minmax.py:58(evaluate_line_fast)
+  2769558    1.544    0.000    1.544    0.000 {built-in method builtins.hash}
+    76475    1.449    0.000    1.449    0.000 {method 'call' of '_tkinter.tkapp' objects}
+  9382029    0.756    0.000    0.756    0.000 {built-in method builtins.max}
+    56824    0.624    0.000    0.653    0.000 init.py:123(count_open_threes_in_line)
+     6388    0.418    0.000   17.316    0.003 minmax.py:166(find_winning_moves)
+     7363    0.345    0.000    0.376    0.000 minmax.py:144(get_neighbor_positions)
+     8906    0.185    0.000    0.458    0.000 minmax.py:296(evaluate_fast)
+    14205    0.178    0.000    0.188    0.000 minmax.py:496(hash_game_fast)
+2354553/2354549    0.117    0.000    0.117    0.000 {built-in method builtins.len}
+    14206    0.116    0.000    0.290    0.000 init.py:75(capture_stone)
+   233642    0.113    0.000    0.265    0.000 {built-in method builtins.all}
+        1    0.108    0.108    0.108    0.108 {built-in method _tkinter.create}
+  14205/2    0.084    0.000   22.963   11.482 minmax.py:380(minimax_ultra)
+     7359    0.069    0.000    1.812    0.000 minmax.py:180(find_threat_moves)
+    14206    0.058    0.000    0.146    0.000 init.py:8(<listcomp>)
+   454592    0.052    0.000    0.052    0.000 init.py:93(<genexpr>)
+    14206    0.049    0.000    0.130    0.000 init.py:11(<listcomp>)
+   454592    0.049    0.000    0.049    0.000 init.py:111(<genexpr>)
+  1071557    0.044    0.000    0.044    0.000 {method 'append' of 'list' objects}
+    19666    0.037    0.000    1.025    0.000 init.py:34(show_visual_move)
+    19725    0.033    0.000    0.070    0.000 __init__.py:1497(_options)
+    14203    0.030    0.000    0.353    0.000 minmax.py:508(clone_game_fast)
+    12100    0.029    0.000    0.033    0.000 minmax.py:256(is_terminal_fast)
+   434739    0.029    0.000    0.029    0.000 minmax.py:204(<genexpr>)
+    19709    0.027    0.000    0.161    0.000 __init__.py:2797(_create)
+      227    0.027    0.000    0.027    0.000 {method 'clear' of 'dict' objects}
+    14203    0.024    0.000    0.024    0.000 minmax.py:513(<listcomp>)
+    14206    0.024    0.000    0.677    0.000 init.py:160(is_double_free_three)
+   185342    0.022    0.000    0.022    0.000 {built-in method builtins.min}
+   433871    0.022    0.000    0.022    0.000 init.py:183(<genexpr>)
+    14203    0.020    0.000    0.486    0.000 init.py:64(remove_visual_move)
+    14206    0.020    0.000    0.295    0.000 init.py:5(__init__)
+    19738    0.019    0.000    0.030    0.000 __init__.py:101(_cnfmerge)
+    14206    0.018    0.000    1.027    0.000 init.py:179(place_stone)
+     3194    0.018    0.000   19.211    0.006 minmax.py:195(generate_moves_ultra_fast)
+   358043    0.018    0.000    0.018    0.000 {method 'get' of 'dict' objects}
+   377908    0.017    0.000    0.017    0.000 {method 'add' of 'set' objects}
+    37063    0.012    0.000    1.365    0.000 __init__.py:1341(update)

@@ -2,19 +2,19 @@ import tkinter as tk
 import time
 from init import GomokuGame
 from gui_helper import erase_stone
-from minmax import minmax
+from minmax import minmax, get_ai_move
 
 game = GomokuGame()
 game.root = tk.Tk()
 main_frame = tk.Frame(game.root)
 main_frame.pack()
 
-game.canvas = tk.Canvas(main_frame, width=800, height=800, bg='lightyellow')
+game.canvas = tk.Canvas(main_frame, width=800, height=850, bg='lightyellow')
 game.canvas.pack(side=tk.LEFT)
 
 temp_stone_id = None
 
-log_text = tk.Text(main_frame, width=40, height=47, state=tk.DISABLED, bg='black', fg='white')
+log_text = tk.Text(main_frame, width=40, height=50, state=tk.DISABLED, bg='black', fg='white')
 log_text.pack(side=tk.RIGHT)
 
 def log_message(message):
@@ -98,24 +98,30 @@ def click(event):
                 end_game(winner)
                 return
         
-        # AI move calculation with optimized algorithm
-        start_time = time.time()
-        
-        # Use higher depth now that it's optimized
-        search_depth = 8  # Increased from 5
-        max_eval, best_move = minmax(clone_game_simple(game), search_depth, -float('inf'), float('inf'), True, visualize=True, main_game=game)
-        
-        elapsed_time = time.time() - start_time
-        log_message(f"AI found move {best_move} (score: {max_eval}) in {elapsed_time:.2f}s at depth {search_depth}")
-        
-        # Erase previous temp stone if it exists
-        if temp_stone_id is not None:
-            game.canvas.delete(temp_stone_id)
-            temp_stone_id = None
+        # Only use AI for the second player
+        if game.current_player == 2:
+            # log_message(f"AI is thinking... (current player: {game.current_player})")
+            game.canvas.unbind("<Button-1>")
+            # AI move calculation with optimized algorithm
+            start_time = time.time()
+            
+            # Use higher depth now that it's optimized
+            search_depth = 5
+            max_eval, best_move = minmax(clone_game_simple(game), search_depth, -float('inf'), float('inf'), True, visualize=True, main_game=game)
+            # max_eval, best_move = get_ai_move(clone_game_simple(game), search_depth, visualize=True, main_game=game)
+            
+            elapsed_time = time.time() - start_time
+            log_message(f"AI found move {best_move} (score: {max_eval}) in {elapsed_time:.2f}s at depth {search_depth}")
+            
+            # Erase previous temp stone if it exists
+            if temp_stone_id is not None:
+                game.canvas.delete(temp_stone_id)
+                temp_stone_id = None
 
-        # Draw new temp stone if best_move is valid
-        if best_move is not None:
-            temp_stone_id = draw_temp_stone(*best_move)
+            # Draw new temp stone if best_move is valid
+            if best_move is not None:
+                temp_stone_id = draw_temp_stone(*best_move)
+            game.canvas.bind("<Button-1>", click)
 
 def check_winner():
     # Check if any player has taken 10 stones
