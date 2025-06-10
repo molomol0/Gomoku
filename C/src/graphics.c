@@ -27,7 +27,7 @@ bool graphics_init(void) {
         return false;
     }
     
-    window = SDL_CreateWindow("Gomoku AI - Professional C Implementation",
+    window = SDL_CreateWindow("Gomoku",
                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                              WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (!window) {

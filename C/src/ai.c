@@ -1,12 +1,3 @@
-/**
- * @file ai_balanced.c
- * @brief Balanced AI engine - optimized but preserves original strength
- * @author Your Name
- * @date 2025
- * 
- * This version balances performance optimizations with AI playing strength
- */
-
 #include "ai.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +39,6 @@ void ai_clear_transposition_table(void) {
     }
 }
 
-// Optimized but simple hash
 static uint64_t game_hash_optimized(const GomokuGame* game) {
     uint64_t hash = 0;
     
@@ -66,7 +56,6 @@ static uint64_t game_hash_optimized(const GomokuGame* game) {
            ((uint64_t)game->taken_stones[1] << 16);
 }
 
-// Optimized consecutive counting
 static inline int count_consecutive_optimized(const GomokuGame* game, int row, int col, int dx, int dy, int player) {
     if (game->board[row][col] != player) {
         return 0;
@@ -94,7 +83,6 @@ static inline int count_consecutive_optimized(const GomokuGame* game, int row, i
     return count;
 }
 
-// Optimized line evaluation - PRESERVE ORIGINAL LOGIC
 static inline int evaluate_line_optimized(const GomokuGame* game, int row, int col, int dx, int dy, int player) {
     int pos_count, neg_count;
     
@@ -127,7 +115,6 @@ static inline int evaluate_line_optimized(const GomokuGame* game, int row, int c
     
     if (total_count < 2) return 0;
     
-    // Check open ends - EXACTLY like original
     int open_ends = 0;
     
     // Check positive end
@@ -146,7 +133,6 @@ static inline int evaluate_line_optimized(const GomokuGame* game, int row, int c
         open_ends++;
     }
     
-    // ORIGINAL scoring logic
     int base_score;
     if (total_count >= 5) base_score = PATTERN_WIN;
     else if (total_count == 4) base_score = PATTERN_FOUR;
@@ -154,7 +140,6 @@ static inline int evaluate_line_optimized(const GomokuGame* game, int row, int c
     else if (total_count == 2) base_score = PATTERN_TWO;
     else base_score = PATTERN_ONE;
     
-    // ORIGINAL multiplier logic
     double multiplier = 1.0;
     if (open_ends == 2) multiplier = 3.0;
     else if (open_ends == 1) multiplier = 1.5;
@@ -163,7 +148,6 @@ static inline int evaluate_line_optimized(const GomokuGame* game, int row, int c
     return (int)(base_score * multiplier);
 }
 
-// PRESERVE ORIGINAL EVALUATION LOGIC
 int ai_evaluate_position_for_player(GomokuGame* game, int row, int col, int player) {
     if (game->board[row][col] != EMPTY) return 0;
     
@@ -172,7 +156,6 @@ int ai_evaluate_position_for_player(GomokuGame* game, int row, int col, int play
     int max_score = 0;
     int threat_count = 0;
     
-    // Evaluate all directions - KEEP ORIGINAL LOGIC
     for (int d = 0; d < 4; d++) {
         int score = evaluate_line_optimized(game, row, col, directions[d].dx, directions[d].dy, player);
         if (score >= PATTERN_WIN) {
@@ -193,11 +176,10 @@ int ai_evaluate_position_for_player(GomokuGame* game, int row, int col, int play
     return max_score;
 }
 
-// Smart winning move detection - efficient but not overly restrictive
 static void find_winning_moves_smart(const GomokuGame* game, Move* moves, int* count, int player) {
     *count = 0;
     
-    // Check all empty positions but use fast evaluation
+    // Check all empty positions
     for (int i = 0; i < BOARD_SIZE && *count < 5; i++) {
         for (int j = 0; j < BOARD_SIZE && *count < 5; j++) {
             if (game->board[i][j] == EMPTY) {
@@ -229,7 +211,6 @@ static void find_winning_moves_smart(const GomokuGame* game, Move* moves, int* c
     }
 }
 
-// Smart neighbor finding - broader search for better play
 static void find_neighbor_positions_smart(const GomokuGame* game, Move* moves, int* count, int max_moves) {
     *count = 0;
     bool visited[BOARD_SIZE][BOARD_SIZE] = {false};
@@ -259,7 +240,6 @@ static void find_neighbor_positions_smart(const GomokuGame* game, Move* moves, i
     }
 }
 
-// PRESERVE ORIGINAL MOVE GENERATION LOGIC
 void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int max_moves) {
     *move_count = 0;
     
@@ -293,7 +273,7 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
     // 3. Generate neighbor positions and evaluate them
     find_neighbor_positions_smart(game, moves, move_count, max_moves);
     
-    // Evaluate all positions - PRESERVE ORIGINAL EVALUATION LOGIC
+    // Evaluate all positions
     for (int i = 0; i < *move_count; i++) {
         GomokuGame temp_game;
         memcpy(&temp_game, game, sizeof(GomokuGame));
@@ -301,8 +281,7 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
         int our_score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, game->current_player);
         int opp_score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, opponent);
         
-        // ORIGINAL scoring logic - slight preference for offense
-        moves[i].score = (int)(our_score * 1.2 + opp_score);
+        moves[i].score = (int)(our_score + opp_score);
     }
     
     // Sort moves by score (descending)
@@ -315,6 +294,11 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
             }
         }
     }
+    // print the 5 best moves
+    // printf("Best moves found:\n");
+    // for (int i = 0; i < *move_count && i < 5; i++) {
+    //     printf("Move (%d, %d) with score %d\n", moves[i].row, moves[i].col, moves[i].score);
+    // }
     
     // Limit to best moves
     if (*move_count > max_moves) {
@@ -322,7 +306,6 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
     }
 }
 
-// PRESERVE ORIGINAL EVALUATION LOGIC
 int ai_evaluate_position(const GomokuGame* game) {
     int score = 0;
     
@@ -357,7 +340,6 @@ int ai_evaluate_position(const GomokuGame* game) {
     return score;
 }
 
-// Optimized minimax but PRESERVE SEARCH BEHAVIOR
 static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bool maximizing, Move* best_move) {
     last_stats.nodes_searched++;
     
@@ -471,8 +453,14 @@ static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bo
     }
 }
 
-// Main AI interface
 Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
+    printf("========================================================\n");
+    printf("========================================================\n");
+    printf("==                                                    ==\n");
+    printf("==                  AI getting Move                   ==\n");
+    printf("==                                                    ==\n");
+    printf("========================================================\n");
+    printf("========================================================\n\n");
     // Reset statistics
     last_stats.nodes_searched = 0;
     last_stats.cache_hits = 0;

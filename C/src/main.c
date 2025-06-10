@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 // Configuration
-#define AI_SEARCH_DEPTH 8
+#define AI_SEARCH_DEPTH 7
 #define AI_PLAYER WHITE
 
 // Function declarations
@@ -15,7 +15,7 @@ static void handle_ai_move(GomokuGame* game);
 static void print_game_info(const GomokuGame* game);
 
 int main(void) {
-    printf("=== Gomoku AI - Professional C Implementation ===\n");
+    printf("=== Gomoku AI ===\n");
     printf("Click to place your stone. AI will respond automatically.\n");
     printf("Search depth: %d\n", AI_SEARCH_DEPTH);
     printf("You are playing as: %s\n", (AI_PLAYER == WHITE) ? "Black" : "White");
