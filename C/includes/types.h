@@ -4,12 +4,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include "../SDL2_ttf/SDL_ttf.h"
 
 // Game configuration constants
 #define BOARD_SIZE 19
 #define CELL_SIZE 40
 #define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 850
+#define WINDOW_HEIGHT 800
 
 // AI constants
 #define AI_INFINITY 1000000000

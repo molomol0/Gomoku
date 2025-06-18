@@ -1,8 +1,9 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -O3 -march=native -flto -I includes
+CFLAGS = -Wall -Wextra -std=c99 -O3 -march=native -flto -I includes -I$(HOME)/local/include/SDL2 -I/usr/include/SDL2 
+
+LIBS = -L$(HOME)/local/lib -lSDL2 -lSDL2_ttf -lm
 DEBUG_FLAGS = -g -DDEBUG -O0
-LIBS = -lSDL2 -lm
 
 # Directories
 SRC_DIR = src
@@ -11,7 +12,8 @@ OBJ_DIR = $(BUILD_DIR)/obj
 ANALYZE_DIR = analyze
 
 # Source files
-SRCS = $(addprefix $(SRC_DIR)/, main.c game.c ai.c graphics.c)
+# SRCS = $(addprefix $(SRC_DIR)/, main.c game.c graphics.c AI/minmax.c AI/core.c AI/evaluation.c AI/moves.c)
+SRCS = $(addprefix $(SRC_DIR)/, main.c game.c graphics.c ai.c)
 OBJECTS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 NAME = gomoku
 
@@ -21,6 +23,7 @@ all: $(NAME)
 # Create directories
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)/AI
 
 # Compile object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
@@ -49,7 +52,7 @@ re: fclean all
 # Static analysis with profiling
 analyze:
 	@mkdir -p $(ANALYZE_DIR)
-	@$(CC) -pg $(SRCS) -o $(NAME) $(LIBS) -I includes
+	@$(CC) $(CFLAGS) -pg $(SRCS) -o $(NAME) $(LIBS) -I includes
 	@./$(NAME)
 	@mv gmon.out $(ANALYZE_DIR)/
 	@gprof $(NAME) $(ANALYZE_DIR)/gmon.out > $(ANALYZE_DIR)/profile.txt

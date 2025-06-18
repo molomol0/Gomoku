@@ -1,12 +1,12 @@
 #include "types.h"
 #include "game.h"
-#include "ai.h"
+#include "ai_core.h"
 #include "graphics.h"
 #include <stdio.h>
 #include <stdbool.h>
 
 // Configuration
-#define AI_SEARCH_DEPTH 7
+#define AI_SEARCH_DEPTH 10
 #define AI_PLAYER WHITE
 
 // Function declarations

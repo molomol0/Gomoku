@@ -14,8 +14,10 @@ static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bo
 static inline int count_consecutive_optimized(const GomokuGame* game, int row, int col, int dx, int dy, int player);
 static inline int evaluate_line_optimized(const GomokuGame* game, int row, int col, int dx, int dy, int player);
 static void find_winning_moves_smart(const GomokuGame* game, Move* moves, int* count, int player);
+static void find_blocking_moves_smart(const GomokuGame* game, Move* moves, int* count, int player);
 static void find_neighbor_positions_smart(const GomokuGame* game, Move* moves, int* count, int max_moves);
 static uint64_t game_hash_optimized(const GomokuGame* game);
+static bool is_immediate_threat(const GomokuGame* game, int row, int col, int player);
 
 void ai_init(void) {
     transposition_table = calloc(MAX_TT_SIZE, sizeof(TTEntry));
@@ -148,6 +150,38 @@ static inline int evaluate_line_optimized(const GomokuGame* game, int row, int c
     return (int)(base_score * multiplier);
 }
 
+// NEW: Check if a move creates an immediate threat (4-in-a-row that can win next turn)
+static bool is_immediate_threat(const GomokuGame* game, int row, int col, int player) {
+    if (game->board[row][col] != EMPTY) return false;
+    
+    GomokuGame temp_game;
+    memcpy(&temp_game, game, sizeof(GomokuGame));
+    temp_game.board[row][col] = player;
+    
+    // Check all directions for 4-in-a-row with open end
+    for (int d = 0; d < 4; d++) {
+        int count = count_consecutive_optimized(&temp_game, row, col, directions[d].dx, directions[d].dy, player);
+        if (count >= 4) {
+            // Check if there's an empty space to complete the 5
+            int pos_r = row + directions[d].dx * count;
+            int pos_c = col + directions[d].dy * count;
+            int neg_r = row - directions[d].dx * (count - 1);
+            int neg_c = col - directions[d].dy * (count - 1);
+            
+            bool can_extend_pos = (pos_r >= 0 && pos_r < BOARD_SIZE && pos_c >= 0 && pos_c < BOARD_SIZE && 
+                                  temp_game.board[pos_r][pos_c] == EMPTY);
+            bool can_extend_neg = (neg_r >= 0 && neg_r < BOARD_SIZE && neg_c >= 0 && neg_c < BOARD_SIZE && 
+                                  temp_game.board[neg_r][neg_c] == EMPTY);
+            
+            if (can_extend_pos || can_extend_neg) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
 int ai_evaluate_position_for_player(GomokuGame* game, int row, int col, int player) {
     if (game->board[row][col] != EMPTY) return 0;
     
@@ -168,22 +202,103 @@ int ai_evaluate_position_for_player(GomokuGame* game, int row, int col, int play
         max_score = (score > max_score) ? score : max_score;
     }
     
-    // ORIGINAL threat bonus logic
-    if (threat_count >= 2) max_score += 30000;
-    else if (threat_count == 1) max_score += 5000;
+    // Enhanced threat bonus logic - prioritize immediate threats
+    if (is_immediate_threat(game, row, col, player)) {
+        max_score += 50000; // Higher bonus for immediate threats
+    } else if (threat_count >= 2) {
+        max_score += 30000;
+    } else if (threat_count == 1) {
+        max_score += 5000;
+    }
     
     game->board[row][col] = EMPTY;
     return max_score;
 }
 
+// Fast winning move check - directly checks for 5-in-a-row without full evaluation
+static inline bool is_winning_move_fast(const GomokuGame* game, int row, int col, int player) {
+    // Temporarily place the stone
+    ((GomokuGame*)game)->board[row][col] = player;
+    
+    // Check all 4 directions for 5-in-a-row
+    for (int d = 0; d < 4; d++) {
+        int count = 1; // Count the placed stone
+        
+        // Count in positive direction
+        int r = row + directions[d].dx;
+        int c = col + directions[d].dy;
+        while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && 
+               game->board[r][c] == player) {
+            count++;
+            r += directions[d].dx;
+            c += directions[d].dy;
+        }
+        
+        // Count in negative direction
+        r = row - directions[d].dx;
+        c = col - directions[d].dy;
+        while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && 
+               game->board[r][c] == player) {
+            count++;
+            r -= directions[d].dx;
+            c -= directions[d].dy;
+        }
+        
+        // Remove the temporarily placed stone
+        ((GomokuGame*)game)->board[row][col] = EMPTY;
+        
+        if (count >= 5) {
+            return true;
+        }
+    }
+    
+    // Remove the temporarily placed stone
+    ((GomokuGame*)game)->board[row][col] = EMPTY;
+    return false;
+}
+
+// Alternative version using bitwise operations for even faster candidate generation
 static void find_winning_moves_smart(const GomokuGame* game, Move* moves, int* count, int player) {
     *count = 0;
     
-    // Check all empty positions
+    // Use a more efficient approach: only check positions adjacent to existing stones
     for (int i = 0; i < BOARD_SIZE && *count < 5; i++) {
         for (int j = 0; j < BOARD_SIZE && *count < 5; j++) {
+            if (game->board[i][j] != EMPTY) {
+                // Check 8 adjacent positions
+                static const int offsets[8][2] = {
+                    {-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}
+                };
+                
+                for (int k = 0; k < 8 && *count < 5; k++) {
+                    int ni = i + offsets[k][0];
+                    int nj = j + offsets[k][1];
+                    
+                    if (ni >= 0 && ni < BOARD_SIZE && nj >= 0 && nj < BOARD_SIZE && 
+                        game->board[ni][nj] == EMPTY) {
+                        
+                        if (is_winning_move_fast(game, ni, nj, player)) {
+                            moves[*count].row = ni;
+                            moves[*count].col = nj;
+                            moves[*count].score = AI_INFINITY;
+                            (*count)++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// NEW: Find moves that block immediate threats (4-in-a-row)
+static void find_blocking_moves_smart(const GomokuGame* game, Move* moves, int* count, int player) {
+    *count = 0;
+    
+    // Check all empty positions for blocking immediate threats
+    for (int i = 0; i < BOARD_SIZE && *count < 10; i++) {
+        for (int j = 0; j < BOARD_SIZE && *count < 10; j++) {
             if (game->board[i][j] == EMPTY) {
-                // Quick proximity check - only positions within 2 of existing stones
+                // Quick proximity check
                 bool near_stone = false;
                 for (int di = -2; di <= 2 && !near_stone; di++) {
                     for (int dj = -2; dj <= 2 && !near_stone; dj++) {
@@ -195,16 +310,11 @@ static void find_winning_moves_smart(const GomokuGame* game, Move* moves, int* c
                     }
                 }
                 
-                if (near_stone) {
-                    GomokuGame temp_game;
-                    memcpy(&temp_game, game, sizeof(GomokuGame));
-                    int score = ai_evaluate_position_for_player(&temp_game, i, j, player);
-                    if (score >= AI_INFINITY) {
-                        moves[*count].row = i;
-                        moves[*count].col = j;
-                        moves[*count].score = score;
-                        (*count)++;
-                    }
+                if (near_stone && is_immediate_threat(game, i, j, player)) {
+                    moves[*count].row = i;
+                    moves[*count].col = j;
+                    moves[*count].score = 100000; // Very high priority for blocking
+                    (*count)++;
                 }
             }
         }
@@ -263,14 +373,27 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
     
     // 1. Find immediate wins for current player
     find_winning_moves_smart(game, moves, move_count, game->current_player);
-    if (*move_count > 0) return;
+    if (*move_count > 0) {
+        // printf("Found %d winning moves for current player\n", *move_count);
+        return;
+    }
     
     // 2. Find opponent winning moves to block
     int opponent = (game->current_player == BLACK) ? WHITE : BLACK;
     find_winning_moves_smart(game, moves, move_count, opponent);
-    if (*move_count > 0) return;
+    if (*move_count > 0) {
+        // printf("Found %d winning moves to block for opponent\n", *move_count);
+        return;
+    }
     
-    // 3. Generate neighbor positions and evaluate them
+    // 3. NEW: Find and block immediate threats (4-in-a-row)
+    find_blocking_moves_smart(game, moves, move_count, opponent);
+    if (*move_count > 0) {
+        // printf("Found %d immediate threats to block\n", *move_count);
+        return;
+    }
+    
+    // 4. Generate neighbor positions and evaluate them
     find_neighbor_positions_smart(game, moves, move_count, max_moves);
     
     // Evaluate all positions
@@ -281,7 +404,7 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
         int our_score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, game->current_player);
         int opp_score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, opponent);
         
-        moves[i].score = (int)(our_score + opp_score);
+        moves[i].score = (int)(our_score + opp_score * 0.9); // Slightly prioritize our moves
     }
     
     // Sort moves by score (descending)
@@ -294,11 +417,6 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
             }
         }
     }
-    // print the 5 best moves
-    // printf("Best moves found:\n");
-    // for (int i = 0; i < *move_count && i < 5; i++) {
-    //     printf("Move (%d, %d) with score %d\n", moves[i].row, moves[i].col, moves[i].score);
-    // }
     
     // Limit to best moves
     if (*move_count > max_moves) {
@@ -454,13 +572,6 @@ static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bo
 }
 
 Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
-    printf("========================================================\n");
-    printf("========================================================\n");
-    printf("==                                                    ==\n");
-    printf("==                  AI getting Move                   ==\n");
-    printf("==                                                    ==\n");
-    printf("========================================================\n");
-    printf("========================================================\n\n");
     // Reset statistics
     last_stats.nodes_searched = 0;
     last_stats.cache_hits = 0;
@@ -468,11 +579,12 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     
     clock_t start = clock();
     
-    // Quick win check
+    // Enhanced threat detection
     Move moves[MAX_MOVES * 4];
     int move_count;
     ai_generate_moves(game, moves, &move_count, MAX_MOVES);
     
+    // Check immediate wins for current player
     for (int i = 0; i < move_count; i++) {
         GomokuGame temp_game;
         memcpy(&temp_game, game, sizeof(GomokuGame));
@@ -485,7 +597,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
         }
     }
     
-    // Quick defense check
+    // Check opponent immediate wins to block
     int opponent = (game->current_player == BLACK) ? WHITE : BLACK;
     for (int i = 0; i < move_count; i++) {
         GomokuGame temp_game;
@@ -493,6 +605,16 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
         int score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, opponent);
         if (score >= AI_INFINITY) {
             printf("Blocking opponent win: (%d, %d)\n", moves[i].row, moves[i].col);
+            last_stats.time_taken = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            if (stats) *stats = last_stats;
+            return moves[i];
+        }
+    }
+    
+    // NEW: Check for immediate threats (4-in-a-row) to block
+    for (int i = 0; i < move_count; i++) {
+        if (is_immediate_threat(game, moves[i].row, moves[i].col, opponent)) {
+            printf("Blocking immediate threat at: (%d, %d)\n", moves[i].row, moves[i].col);
             last_stats.time_taken = ((double)(clock() - start)) / CLOCKS_PER_SEC;
             if (stats) *stats = last_stats;
             return moves[i];
@@ -525,8 +647,24 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     printf("Nodes searched: %d, Cache hits: %d, Pruned: %d\n", 
            last_stats.nodes_searched, last_stats.cache_hits, last_stats.pruned);
     
+    // Add printing of top 15 moves
+    printf("\nTop 15 considered moves:\n");
+    int display_count = move_count < 15 ? move_count : 15;
+    Move real_best_move = moves[0];
+    for (int i = 0; i < display_count; i++) {
+        // Evaluate each move to show its score
+        GomokuGame temp_eval;
+        memcpy(&temp_eval, game, sizeof(GomokuGame));
+        int move_score = ai_evaluate_position_for_player(&temp_eval, moves[i].row, moves[i].col, game->current_player);
+        if (move_score > real_best_move.score) {
+            real_best_move = moves[i];
+        }
+        printf("%d. (%d, %d) - Score: %d\n", i + 1, moves[i].row, moves[i].col, move_score);
+    }
+    printf("\n");
+    
     if (stats) *stats = last_stats;
-    return best_move;
+    return real_best_move;
 }
 
 AIStats ai_get_last_stats(void) {

@@ -14,18 +14,33 @@ static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 static VisualMarker visual_markers[MAX_VISUAL_MARKERS];
 static int visual_marker_count = 0;
+static TTF_Font* font = NULL;
+
 
 // Internal function declarations
 static void draw_board(void);
 static void draw_stone(int row, int col, SDL_Color color);
 static void draw_circle_filled(int x, int y, int radius, SDL_Color color);
 static void draw_visual_markers(void);
+static void draw_simple_number(int x, int y, int num);
 
 bool graphics_init(void) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
+    if (TTF_Init() == -1) {
+        printf("SDL_ttf could not initialize! TTF_Error: %s\n", TTF_GetError());
+        return false;
+    }
+
+    // Load font
+    font = TTF_OpenFont("font.ttf", 16); // Exemple : "fonts/FreeSans.ttf"
+    if (!font) {
+        printf("Failed to load font! TTF_Error: %s\n", TTF_GetError());
+        return false;
+    }
+
     
     window = SDL_CreateWindow("Gomoku",
                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -54,6 +69,12 @@ void graphics_cleanup(void) {
         SDL_DestroyWindow(window);
         window = NULL;
     }
+    if (font) {
+        TTF_CloseFont(font);
+        font = NULL;
+    }
+    TTF_Quit();
+
     SDL_Quit();
 }
 
@@ -61,6 +82,15 @@ static void draw_board(void) {
     // Set background color (light yellow)
     SDL_SetRenderDrawColor(renderer, COLOR_BACKGROUND.r, COLOR_BACKGROUND.g, COLOR_BACKGROUND.b, COLOR_BACKGROUND.a);
     SDL_RenderClear(renderer);
+    
+    // Draw coordinates
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        // Draw horizontal numbers (along the top)
+        draw_simple_number(CELL_SIZE + i * CELL_SIZE - 7, CELL_SIZE/3, i);
+        
+        // Draw vertical numbers (along the left side)
+        draw_simple_number(CELL_SIZE/3, CELL_SIZE + i * CELL_SIZE - 7, i);
+    }
     
     // Draw grid lines
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -147,6 +177,32 @@ static void draw_visual_markers(void) {
     }
 }
 
+static void draw_simple_number(int x, int y, int num) {
+    char str[4];
+    snprintf(str, sizeof(str), "%d", num);
+
+    SDL_Color textColor = COLOR_BLACK;
+
+    SDL_Surface* textSurface = TTF_RenderText_Blended(font, str, textColor);
+    if (!textSurface) {
+        printf("Unable to render text surface! TTF_Error: %s\n", TTF_GetError());
+        return;
+    }
+
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    if (!textTexture) {
+        printf("Unable to create texture from rendered text! SDL_Error: %s\n", SDL_GetError());
+        SDL_FreeSurface(textSurface);
+        return;
+    }
+
+    SDL_Rect renderQuad = { x, y, textSurface->w, textSurface->h };
+    SDL_RenderCopy(renderer, textTexture, NULL, &renderQuad);
+
+    SDL_DestroyTexture(textTexture);
+    SDL_FreeSurface(textSurface);
+}
+
 void graphics_draw_game(const GomokuGame* game) {
     draw_board();
     
@@ -162,7 +218,7 @@ void graphics_draw_game(const GomokuGame* game) {
     }
     
     // Draw visual markers
-    draw_visual_markers();
+    // draw_visual_markers();
     
     // Draw capture count (simple text representation using rectangles)
     // Black captures
@@ -191,6 +247,12 @@ void graphics_draw_game(const GomokuGame* game) {
     SDL_RenderFillRect(renderer, &indicator);
     SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
     SDL_RenderDrawRect(renderer, &indicator);
+    
+    // Draw simple number for black captures
+    // draw_simple_number(CELL_SIZE * BOARD_SIZE + 20, 50, game->taken_stones[0]);
+    
+    // Draw simple number for white captures
+    // draw_simple_number(CELL_SIZE * BOARD_SIZE + 20, 80, game->taken_stones[1]);
     
     SDL_RenderPresent(renderer);
 }
