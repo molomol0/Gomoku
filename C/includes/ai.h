@@ -49,10 +49,6 @@ void ai_generate_moves(const GomokuGame* game, Move* moves, int* move_count, int
  */
 int ai_evaluate_position(const GomokuGame* game);
 
-/**
- * @brief Clear transposition table
- */
-void ai_clear_transposition_table(void);
 
 /**
  * @brief Get AI statistics from last search

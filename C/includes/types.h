@@ -64,6 +64,7 @@ typedef struct {
     bool rule_center_opening;
     bool rule_no_double_threes;
     bool rule_captures;
+    bool mode_ai;
 } GomokuGame;
 
 /**

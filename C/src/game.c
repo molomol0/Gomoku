@@ -13,6 +13,8 @@ void game_init(GomokuGame* game) {
     game->rule_center_opening = true;
     game->rule_no_double_threes = true;
     game->rule_captures = true;
+    game->mode_ai = true;
+    
 }
 
 void game_copy(GomokuGame* dest, const GomokuGame* src) {

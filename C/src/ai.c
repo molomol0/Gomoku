@@ -35,12 +35,6 @@ void ai_cleanup(void) {
     }
 }
 
-void ai_clear_transposition_table(void) {
-    if (transposition_table) {
-        memset(transposition_table, 0, MAX_TT_SIZE * sizeof(TTEntry));
-    }
-}
-
 static uint64_t game_hash_optimized(const GomokuGame* game) {
     uint64_t hash = 0;
     

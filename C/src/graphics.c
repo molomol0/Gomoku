@@ -7,7 +7,7 @@ const SDL_Color COLOR_BLACK = {0, 0, 0, 255};
 const SDL_Color COLOR_WHITE = {255, 255, 255, 255};
 const SDL_Color COLOR_BLUE = {0, 0, 255, 255};
 const SDL_Color COLOR_RED = {255, 0, 0, 255};
-const SDL_Color COLOR_BACKGROUND = {255, 255, 224, 255};
+const SDL_Color COLOR_BACKGROUND = {255, 190, 90, 255};
 
 // Static variables
 static SDL_Window* window = NULL;
@@ -23,6 +23,19 @@ static void draw_stone(int row, int col, SDL_Color color);
 static void draw_circle_filled(int x, int y, int radius, SDL_Color color);
 static void draw_visual_markers(void);
 static void draw_simple_number(int x, int y, int num);
+static void draw_simple_text(int x, int y, const char* text);
+static void draw_rule_buttons(const GomokuGame* game); // Add this line
+
+#define BUTTON_WIDTH  180
+#define BUTTON_HEIGHT 40
+#define BUTTON_MARGIN 10
+
+SDL_Rect button_rects[4] = {
+    {CELL_SIZE * BOARD_SIZE + 20, 150, 180, 40}, // Captures
+    {CELL_SIZE * BOARD_SIZE + 20, 200, 180, 40}, // Double Three
+    {CELL_SIZE * BOARD_SIZE + 20, 250, 180, 40}, // Center Opening
+    {CELL_SIZE * BOARD_SIZE + 20, 300, 180, 40}  // AI Mode
+};
 
 bool graphics_init(void) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -91,6 +104,11 @@ static void draw_board(void) {
         // Draw vertical numbers (along the left side)
         draw_simple_number(CELL_SIZE/3, CELL_SIZE + i * CELL_SIZE - 7, i);
     }
+
+    // Draw instructions
+    draw_simple_text(800, 400, "Click to place a stone");
+    draw_simple_text(800, 420, "Press 'R' to restart");
+    draw_simple_text(800, 440, "Press 'P' to print board");
     
     // Draw grid lines
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -203,9 +221,28 @@ static void draw_simple_number(int x, int y, int num) {
     SDL_FreeSurface(textSurface);
 }
 
+static void draw_simple_text(int x, int y, const char* text) {
+    SDL_Color textColor = COLOR_BLACK;
+    SDL_Surface* textSurface = TTF_RenderText_Blended(font, text, textColor);
+    if (!textSurface) {
+        printf("Unable to render text surface! TTF_Error: %s\n", TTF_GetError());
+        return;
+    }
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    if (!textTexture) {
+        printf("Unable to create texture from rendered text! SDL_Error: %s\n", SDL_GetError());
+        SDL_FreeSurface(textSurface);
+        return;
+    }
+    SDL_Rect renderQuad = { x, y, textSurface->w, textSurface->h };
+    SDL_RenderCopy(renderer, textTexture, NULL, &renderQuad);
+    SDL_DestroyTexture(textTexture);
+    SDL_FreeSurface(textSurface);
+}
+
 void graphics_draw_game(const GomokuGame* game) {
     draw_board();
-    
+
     // Draw stones
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
@@ -216,9 +253,10 @@ void graphics_draw_game(const GomokuGame* game) {
             }
         }
     }
-    
+
     // Draw visual markers
-    // draw_visual_markers();
+    if (!game->mode_ai)
+        draw_visual_markers();
     
     // Draw capture count (simple text representation using rectangles)
     // Black captures
@@ -254,7 +292,35 @@ void graphics_draw_game(const GomokuGame* game) {
     // Draw simple number for white captures
     // draw_simple_number(CELL_SIZE * BOARD_SIZE + 20, 80, game->taken_stones[1]);
     
+    draw_rule_buttons(game);
     SDL_RenderPresent(renderer);
+}
+
+void draw_rule_buttons(const GomokuGame* game) {
+    const char* labels[4] = {
+        "Captures",
+        "Double Three",
+        "Center Opening",
+        "AI Mode"
+    };
+    const bool states[4] = {
+        game->rule_captures,
+        game->rule_no_double_threes,
+        game->rule_center_opening,
+        game->mode_ai
+    };
+
+    for (int i = 0; i < 4; i++) {
+        SDL_Rect rect = button_rects[i];
+        SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+        SDL_RenderFillRect(renderer, &rect);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderDrawRect(renderer, &rect);
+
+        char text[64];
+        snprintf(text, sizeof(text), "%s: %s", labels[i], states[i] ? "ON" : "OFF");
+        draw_simple_text(rect.x + 10, rect.y + 10, text);
+    }
 }
 
 bool graphics_handle_click(int x, int y, int* row, int* col) {

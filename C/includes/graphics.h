@@ -4,6 +4,8 @@
 #include "types.h"
 #include "game.h"
 
+extern SDL_Rect button_rects[4]; // Rule buttons
+
 /**
  * @brief Initialize graphics system
  * @return true if successful, false otherwise

@@ -6,7 +6,6 @@
 // Core AI functions
 void ai_init(void);
 void ai_cleanup(void);
-void ai_clear_transposition_table(void);
 Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats);
 AIStats ai_get_last_stats(void);
 
