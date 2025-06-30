@@ -1,0 +1,225 @@
+\hypertarget{types_8h}{}\doxysection{includes/types.h File Reference}
+\label{types_8h}\index{includes/types.h@{includes/types.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$SDL2/\+SDL.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}../\+SDL2\+\_\+ttf/\+SDL\+\_\+ttf.\+h\char`\"{}}\newline
+Include dependency graph for types.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{types_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{types_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structDirection}{Direction}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{structDirection}{Direction}} structure for pattern detection. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structMove}{Move}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{structMove}{Move}} structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}}
+\begin{DoxyCompactList}\small\item\em Game state structure. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structTTEntry}{TTEntry}}
+\begin{DoxyCompactList}\small\item\em Transposition table entry. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structVisualMarker}{Visual\+Marker}}
+\begin{DoxyCompactList}\small\item\em Visual marker for AI visualization. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structAIStats}{AIStats}}
+\begin{DoxyCompactList}\small\item\em AI statistics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{types_8h_a1db39eb31d1315ce982608fe25587b6d}{BOARD\+\_\+\+SIZE}}~19
+\item 
+\#define \mbox{\hyperlink{types_8h_a7a4127f14f16563da90eb3c836bc404f}{CELL\+\_\+\+SIZE}}~40
+\item 
+\#define \mbox{\hyperlink{types_8h_a498d9f026138406895e9a34b504ac6a6}{WINDOW\+\_\+\+WIDTH}}~1000
+\item 
+\#define \mbox{\hyperlink{types_8h_a5473cf64fa979b48335079c99532e243}{WINDOW\+\_\+\+HEIGHT}}~800
+\item 
+\#define \mbox{\hyperlink{types_8h_ad04e5f1e2275afe544c8ed3fbdf10b04}{AI\+\_\+\+INFINITY}}~1000000000
+\item 
+\#define \mbox{\hyperlink{types_8h_a6af79764cf080da1583c0d2c7679a560}{MAX\+\_\+\+TT\+\_\+\+SIZE}}~500000
+\item 
+\#define \mbox{\hyperlink{types_8h_afe0c4249f8b5f7d5be976a330a3117d1}{MAX\+\_\+\+MOVES}}~15
+\item 
+\#define \mbox{\hyperlink{types_8h_a9bccab15cfdeae72e269fcd7f02ba4bb}{MAX\+\_\+\+VISUAL\+\_\+\+MARKERS}}~1000
+\item 
+\#define \mbox{\hyperlink{types_8h_a367c6af59134a840ad5f5edb6654bd41}{PATTERN\+\_\+\+WIN}}~100000
+\item 
+\#define \mbox{\hyperlink{types_8h_a9fbc5cce87a73dbabcf253448dd79cc6}{PATTERN\+\_\+\+FOUR}}~50000
+\item 
+\#define \mbox{\hyperlink{types_8h_ab6d529802c9fafd12af425b5d55fd637}{PATTERN\+\_\+\+THREE}}~8000
+\item 
+\#define \mbox{\hyperlink{types_8h_a3e70a0ccdc0af8f459f5e5d475ccfb4d}{PATTERN\+\_\+\+TWO}}~800
+\item 
+\#define \mbox{\hyperlink{types_8h_ad222b9fbf34aa3df36d68dee5ddddde6}{PATTERN\+\_\+\+ONE}}~80
+\item 
+\#define \mbox{\hyperlink{types_8h_a2b7cf2a3641be7b89138615764d60ba3}{EMPTY}}~0
+\item 
+\#define \mbox{\hyperlink{types_8h_a7b3b25cba33b07c303f3060fe41887f6}{BLACK}}~1
+\item 
+\#define \mbox{\hyperlink{types_8h_a87b537f5fa5c109d3c05c13d6b18f382}{WHITE}}~2
+\item 
+\#define \mbox{\hyperlink{types_8h_ae71449b1cc6e6250b91f539153a7a0d3}{M\+\_\+\+PI}}~3.\+14159265358979323846
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const SDL\+\_\+\+Color \mbox{\hyperlink{types_8h_a35e8fb6337409c86c04a91be587f7917}{COLOR\+\_\+\+BLACK}}
+\item 
+const SDL\+\_\+\+Color \mbox{\hyperlink{types_8h_a894a5a6355ebf60238d5576dac330944}{COLOR\+\_\+\+WHITE}}
+\item 
+const SDL\+\_\+\+Color \mbox{\hyperlink{types_8h_a7fab877384fa3f7dd78ab2b115c76f99}{COLOR\+\_\+\+BLUE}}
+\item 
+const SDL\+\_\+\+Color \mbox{\hyperlink{types_8h_a0c71dd453e14ae4a11dd161954128d38}{COLOR\+\_\+\+RED}}
+\item 
+const SDL\+\_\+\+Color \mbox{\hyperlink{types_8h_a8f4d41f68fdd32efce1e37cadbdf1bd9}{COLOR\+\_\+\+BACKGROUND}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{types_8h_ad04e5f1e2275afe544c8ed3fbdf10b04}\label{types_8h_ad04e5f1e2275afe544c8ed3fbdf10b04}} 
+\index{types.h@{types.h}!AI\_INFINITY@{AI\_INFINITY}}
+\index{AI\_INFINITY@{AI\_INFINITY}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{AI\_INFINITY}{AI\_INFINITY}}
+{\footnotesize\ttfamily \#define AI\+\_\+\+INFINITY~1000000000}
+
+\mbox{\Hypertarget{types_8h_a7b3b25cba33b07c303f3060fe41887f6}\label{types_8h_a7b3b25cba33b07c303f3060fe41887f6}} 
+\index{types.h@{types.h}!BLACK@{BLACK}}
+\index{BLACK@{BLACK}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{BLACK}{BLACK}}
+{\footnotesize\ttfamily \#define BLACK~1}
+
+\mbox{\Hypertarget{types_8h_a1db39eb31d1315ce982608fe25587b6d}\label{types_8h_a1db39eb31d1315ce982608fe25587b6d}} 
+\index{types.h@{types.h}!BOARD\_SIZE@{BOARD\_SIZE}}
+\index{BOARD\_SIZE@{BOARD\_SIZE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{BOARD\_SIZE}{BOARD\_SIZE}}
+{\footnotesize\ttfamily \#define BOARD\+\_\+\+SIZE~19}
+
+\mbox{\Hypertarget{types_8h_a7a4127f14f16563da90eb3c836bc404f}\label{types_8h_a7a4127f14f16563da90eb3c836bc404f}} 
+\index{types.h@{types.h}!CELL\_SIZE@{CELL\_SIZE}}
+\index{CELL\_SIZE@{CELL\_SIZE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{CELL\_SIZE}{CELL\_SIZE}}
+{\footnotesize\ttfamily \#define CELL\+\_\+\+SIZE~40}
+
+\mbox{\Hypertarget{types_8h_a2b7cf2a3641be7b89138615764d60ba3}\label{types_8h_a2b7cf2a3641be7b89138615764d60ba3}} 
+\index{types.h@{types.h}!EMPTY@{EMPTY}}
+\index{EMPTY@{EMPTY}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{EMPTY}{EMPTY}}
+{\footnotesize\ttfamily \#define EMPTY~0}
+
+\mbox{\Hypertarget{types_8h_ae71449b1cc6e6250b91f539153a7a0d3}\label{types_8h_ae71449b1cc6e6250b91f539153a7a0d3}} 
+\index{types.h@{types.h}!M\_PI@{M\_PI}}
+\index{M\_PI@{M\_PI}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{M\_PI}{M\_PI}}
+{\footnotesize\ttfamily \#define M\+\_\+\+PI~3.\+14159265358979323846}
+
+\mbox{\Hypertarget{types_8h_afe0c4249f8b5f7d5be976a330a3117d1}\label{types_8h_afe0c4249f8b5f7d5be976a330a3117d1}} 
+\index{types.h@{types.h}!MAX\_MOVES@{MAX\_MOVES}}
+\index{MAX\_MOVES@{MAX\_MOVES}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_MOVES}{MAX\_MOVES}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+MOVES~15}
+
+\mbox{\Hypertarget{types_8h_a6af79764cf080da1583c0d2c7679a560}\label{types_8h_a6af79764cf080da1583c0d2c7679a560}} 
+\index{types.h@{types.h}!MAX\_TT\_SIZE@{MAX\_TT\_SIZE}}
+\index{MAX\_TT\_SIZE@{MAX\_TT\_SIZE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_TT\_SIZE}{MAX\_TT\_SIZE}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+TT\+\_\+\+SIZE~500000}
+
+\mbox{\Hypertarget{types_8h_a9bccab15cfdeae72e269fcd7f02ba4bb}\label{types_8h_a9bccab15cfdeae72e269fcd7f02ba4bb}} 
+\index{types.h@{types.h}!MAX\_VISUAL\_MARKERS@{MAX\_VISUAL\_MARKERS}}
+\index{MAX\_VISUAL\_MARKERS@{MAX\_VISUAL\_MARKERS}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{MAX\_VISUAL\_MARKERS}{MAX\_VISUAL\_MARKERS}}
+{\footnotesize\ttfamily \#define MAX\+\_\+\+VISUAL\+\_\+\+MARKERS~1000}
+
+\mbox{\Hypertarget{types_8h_a9fbc5cce87a73dbabcf253448dd79cc6}\label{types_8h_a9fbc5cce87a73dbabcf253448dd79cc6}} 
+\index{types.h@{types.h}!PATTERN\_FOUR@{PATTERN\_FOUR}}
+\index{PATTERN\_FOUR@{PATTERN\_FOUR}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{PATTERN\_FOUR}{PATTERN\_FOUR}}
+{\footnotesize\ttfamily \#define PATTERN\+\_\+\+FOUR~50000}
+
+\mbox{\Hypertarget{types_8h_ad222b9fbf34aa3df36d68dee5ddddde6}\label{types_8h_ad222b9fbf34aa3df36d68dee5ddddde6}} 
+\index{types.h@{types.h}!PATTERN\_ONE@{PATTERN\_ONE}}
+\index{PATTERN\_ONE@{PATTERN\_ONE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{PATTERN\_ONE}{PATTERN\_ONE}}
+{\footnotesize\ttfamily \#define PATTERN\+\_\+\+ONE~80}
+
+\mbox{\Hypertarget{types_8h_ab6d529802c9fafd12af425b5d55fd637}\label{types_8h_ab6d529802c9fafd12af425b5d55fd637}} 
+\index{types.h@{types.h}!PATTERN\_THREE@{PATTERN\_THREE}}
+\index{PATTERN\_THREE@{PATTERN\_THREE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{PATTERN\_THREE}{PATTERN\_THREE}}
+{\footnotesize\ttfamily \#define PATTERN\+\_\+\+THREE~8000}
+
+\mbox{\Hypertarget{types_8h_a3e70a0ccdc0af8f459f5e5d475ccfb4d}\label{types_8h_a3e70a0ccdc0af8f459f5e5d475ccfb4d}} 
+\index{types.h@{types.h}!PATTERN\_TWO@{PATTERN\_TWO}}
+\index{PATTERN\_TWO@{PATTERN\_TWO}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{PATTERN\_TWO}{PATTERN\_TWO}}
+{\footnotesize\ttfamily \#define PATTERN\+\_\+\+TWO~800}
+
+\mbox{\Hypertarget{types_8h_a367c6af59134a840ad5f5edb6654bd41}\label{types_8h_a367c6af59134a840ad5f5edb6654bd41}} 
+\index{types.h@{types.h}!PATTERN\_WIN@{PATTERN\_WIN}}
+\index{PATTERN\_WIN@{PATTERN\_WIN}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{PATTERN\_WIN}{PATTERN\_WIN}}
+{\footnotesize\ttfamily \#define PATTERN\+\_\+\+WIN~100000}
+
+\mbox{\Hypertarget{types_8h_a87b537f5fa5c109d3c05c13d6b18f382}\label{types_8h_a87b537f5fa5c109d3c05c13d6b18f382}} 
+\index{types.h@{types.h}!WHITE@{WHITE}}
+\index{WHITE@{WHITE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{WHITE}{WHITE}}
+{\footnotesize\ttfamily \#define WHITE~2}
+
+\mbox{\Hypertarget{types_8h_a5473cf64fa979b48335079c99532e243}\label{types_8h_a5473cf64fa979b48335079c99532e243}} 
+\index{types.h@{types.h}!WINDOW\_HEIGHT@{WINDOW\_HEIGHT}}
+\index{WINDOW\_HEIGHT@{WINDOW\_HEIGHT}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{WINDOW\_HEIGHT}{WINDOW\_HEIGHT}}
+{\footnotesize\ttfamily \#define WINDOW\+\_\+\+HEIGHT~800}
+
+\mbox{\Hypertarget{types_8h_a498d9f026138406895e9a34b504ac6a6}\label{types_8h_a498d9f026138406895e9a34b504ac6a6}} 
+\index{types.h@{types.h}!WINDOW\_WIDTH@{WINDOW\_WIDTH}}
+\index{WINDOW\_WIDTH@{WINDOW\_WIDTH}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{WINDOW\_WIDTH}{WINDOW\_WIDTH}}
+{\footnotesize\ttfamily \#define WINDOW\+\_\+\+WIDTH~1000}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{types_8h_a8f4d41f68fdd32efce1e37cadbdf1bd9}\label{types_8h_a8f4d41f68fdd32efce1e37cadbdf1bd9}} 
+\index{types.h@{types.h}!COLOR\_BACKGROUND@{COLOR\_BACKGROUND}}
+\index{COLOR\_BACKGROUND@{COLOR\_BACKGROUND}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{COLOR\_BACKGROUND}{COLOR\_BACKGROUND}}
+{\footnotesize\ttfamily const SDL\+\_\+\+Color COLOR\+\_\+\+BACKGROUND\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{types_8h_a35e8fb6337409c86c04a91be587f7917}\label{types_8h_a35e8fb6337409c86c04a91be587f7917}} 
+\index{types.h@{types.h}!COLOR\_BLACK@{COLOR\_BLACK}}
+\index{COLOR\_BLACK@{COLOR\_BLACK}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{COLOR\_BLACK}{COLOR\_BLACK}}
+{\footnotesize\ttfamily const SDL\+\_\+\+Color COLOR\+\_\+\+BLACK\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{types_8h_a7fab877384fa3f7dd78ab2b115c76f99}\label{types_8h_a7fab877384fa3f7dd78ab2b115c76f99}} 
+\index{types.h@{types.h}!COLOR\_BLUE@{COLOR\_BLUE}}
+\index{COLOR\_BLUE@{COLOR\_BLUE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{COLOR\_BLUE}{COLOR\_BLUE}}
+{\footnotesize\ttfamily const SDL\+\_\+\+Color COLOR\+\_\+\+BLUE\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{types_8h_a0c71dd453e14ae4a11dd161954128d38}\label{types_8h_a0c71dd453e14ae4a11dd161954128d38}} 
+\index{types.h@{types.h}!COLOR\_RED@{COLOR\_RED}}
+\index{COLOR\_RED@{COLOR\_RED}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{COLOR\_RED}{COLOR\_RED}}
+{\footnotesize\ttfamily const SDL\+\_\+\+Color COLOR\+\_\+\+RED\hspace{0.3cm}{\ttfamily [extern]}}
+
+\mbox{\Hypertarget{types_8h_a894a5a6355ebf60238d5576dac330944}\label{types_8h_a894a5a6355ebf60238d5576dac330944}} 
+\index{types.h@{types.h}!COLOR\_WHITE@{COLOR\_WHITE}}
+\index{COLOR\_WHITE@{COLOR\_WHITE}!types.h@{types.h}}
+\doxysubsubsection{\texorpdfstring{COLOR\_WHITE}{COLOR\_WHITE}}
+{\footnotesize\ttfamily const SDL\+\_\+\+Color COLOR\+\_\+\+WHITE\hspace{0.3cm}{\ttfamily [extern]}}
+

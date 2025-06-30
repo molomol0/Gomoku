@@ -1,0 +1,158 @@
+\hypertarget{ai_8h}{}\doxysection{includes/ai.h File Reference}
+\label{ai_8h}\index{includes/ai.h@{includes/ai.h}}
+{\ttfamily \#include \char`\"{}types.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}game.\+h\char`\"{}}\newline
+Include dependency graph for ai.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{ai_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=158pt]{ai_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{ai_8h_aa932f0b8ac899707d0994670377bbb65}{ai\+\_\+init}} (void)
+\begin{DoxyCompactList}\small\item\em Initialize AI engine. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{ai_8h_a3377da48dfc2867e321c02278d242de3}{ai\+\_\+cleanup}} (void)
+\begin{DoxyCompactList}\small\item\em Cleanup AI resources. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structMove}{Move}} \mbox{\hyperlink{ai_8h_a8e935a85c1c6585ce5c93632bd6bc755}{ai\+\_\+get\+\_\+best\+\_\+move}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int depth, \mbox{\hyperlink{structAIStats}{AIStats}} $\ast$stats)
+\begin{DoxyCompactList}\small\item\em Get best move for current player. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{ai_8h_a079729c83ca5d364fec5a0af3e258190}{ai\+\_\+evaluate\+\_\+position\+\_\+for\+\_\+player}} (\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int row, int col, int player)
+\begin{DoxyCompactList}\small\item\em Evaluate position for a specific player. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{ai_8h_ac90fae2ff61155754258b7f3656d3f6d}{ai\+\_\+generate\+\_\+moves}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, \mbox{\hyperlink{structMove}{Move}} $\ast$moves, int $\ast$move\+\_\+count, int max\+\_\+moves)
+\begin{DoxyCompactList}\small\item\em Generate candidate moves. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{ai_8h_ace39bbe1ae15c3c51ef0182b7d73109b}{ai\+\_\+evaluate\+\_\+position}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game)
+\begin{DoxyCompactList}\small\item\em Evaluate game position. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structAIStats}{AIStats}} \mbox{\hyperlink{ai_8h_a47a865e898bdaa3ccc4de4af1ef7eafc}{ai\+\_\+get\+\_\+last\+\_\+stats}} (void)
+\begin{DoxyCompactList}\small\item\em Get AI statistics from last search. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{ai_8h_a3377da48dfc2867e321c02278d242de3}\label{ai_8h_a3377da48dfc2867e321c02278d242de3}} 
+\index{ai.h@{ai.h}!ai\_cleanup@{ai\_cleanup}}
+\index{ai\_cleanup@{ai\_cleanup}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_cleanup()}{ai\_cleanup()}}
+{\footnotesize\ttfamily void ai\+\_\+cleanup (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Cleanup AI resources. 
+
+\mbox{\Hypertarget{ai_8h_ace39bbe1ae15c3c51ef0182b7d73109b}\label{ai_8h_ace39bbe1ae15c3c51ef0182b7d73109b}} 
+\index{ai.h@{ai.h}!ai\_evaluate\_position@{ai\_evaluate\_position}}
+\index{ai\_evaluate\_position@{ai\_evaluate\_position}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_evaluate\_position()}{ai\_evaluate\_position()}}
+{\footnotesize\ttfamily int ai\+\_\+evaluate\+\_\+position (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+
+Evaluate game position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position evaluation score 
+\end{DoxyReturn}
+\mbox{\Hypertarget{ai_8h_a079729c83ca5d364fec5a0af3e258190}\label{ai_8h_a079729c83ca5d364fec5a0af3e258190}} 
+\index{ai.h@{ai.h}!ai\_evaluate\_position\_for\_player@{ai\_evaluate\_position\_for\_player}}
+\index{ai\_evaluate\_position\_for\_player@{ai\_evaluate\_position\_for\_player}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_evaluate\_position\_for\_player()}{ai\_evaluate\_position\_for\_player()}}
+{\footnotesize\ttfamily int ai\+\_\+evaluate\+\_\+position\+\_\+for\+\_\+player (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int}]{row,  }\item[{int}]{col,  }\item[{int}]{player }\end{DoxyParamCaption})}
+
+
+
+Evaluate position for a specific player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em row} & Row position \\
+\hline
+{\em col} & Column position \\
+\hline
+{\em player} & Player to evaluate for \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position score 
+\end{DoxyReturn}
+\mbox{\Hypertarget{ai_8h_ac90fae2ff61155754258b7f3656d3f6d}\label{ai_8h_ac90fae2ff61155754258b7f3656d3f6d}} 
+\index{ai.h@{ai.h}!ai\_generate\_moves@{ai\_generate\_moves}}
+\index{ai\_generate\_moves@{ai\_generate\_moves}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_generate\_moves()}{ai\_generate\_moves()}}
+{\footnotesize\ttfamily void ai\+\_\+generate\+\_\+moves (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{\mbox{\hyperlink{structMove}{Move}} $\ast$}]{moves,  }\item[{int $\ast$}]{move\+\_\+count,  }\item[{int}]{max\+\_\+moves }\end{DoxyParamCaption})}
+
+
+
+Generate candidate moves. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em moves} & Array to store generated moves \\
+\hline
+{\em move\+\_\+count} & Pointer to store number of moves generated \\
+\hline
+{\em max\+\_\+moves} & Maximum number of moves to generate \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{ai_8h_a8e935a85c1c6585ce5c93632bd6bc755}\label{ai_8h_a8e935a85c1c6585ce5c93632bd6bc755}} 
+\index{ai.h@{ai.h}!ai\_get\_best\_move@{ai\_get\_best\_move}}
+\index{ai\_get\_best\_move@{ai\_get\_best\_move}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_get\_best\_move()}{ai\_get\_best\_move()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structMove}{Move}} ai\+\_\+get\+\_\+best\+\_\+move (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int}]{depth,  }\item[{\mbox{\hyperlink{structAIStats}{AIStats}} $\ast$}]{stats }\end{DoxyParamCaption})}
+
+
+
+Get best move for current player. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em depth} & Search depth \\
+\hline
+{\em stats} & Pointer to store AI statistics (can be NULL) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Best move found 
+\end{DoxyReturn}
+\mbox{\Hypertarget{ai_8h_a47a865e898bdaa3ccc4de4af1ef7eafc}\label{ai_8h_a47a865e898bdaa3ccc4de4af1ef7eafc}} 
+\index{ai.h@{ai.h}!ai\_get\_last\_stats@{ai\_get\_last\_stats}}
+\index{ai\_get\_last\_stats@{ai\_get\_last\_stats}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_get\_last\_stats()}{ai\_get\_last\_stats()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structAIStats}{AIStats}} ai\+\_\+get\+\_\+last\+\_\+stats (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get AI statistics from last search. 
+
+\begin{DoxyReturn}{Returns}
+AI statistics 
+\end{DoxyReturn}
+\mbox{\Hypertarget{ai_8h_aa932f0b8ac899707d0994670377bbb65}\label{ai_8h_aa932f0b8ac899707d0994670377bbb65}} 
+\index{ai.h@{ai.h}!ai\_init@{ai\_init}}
+\index{ai\_init@{ai\_init}!ai.h@{ai.h}}
+\doxysubsubsection{\texorpdfstring{ai\_init()}{ai\_init()}}
+{\footnotesize\ttfamily void ai\+\_\+init (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Initialize AI engine. 
+

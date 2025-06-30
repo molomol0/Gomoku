@@ -1,0 +1,188 @@
+\@ifundefined {etoctocstyle}{\let \etoc@startlocaltoc \@gobble \let \etoc@settocdepth \@gobble \let \etoc@depthtag \@gobble \let \etoc@setlocaltop \@gobble }{}
+\contentsline {chapter}{\numberline {1}Class Index}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Class List}{1}{section.1.1}%
+\contentsline {chapter}{\numberline {2}File Index}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}File List}{3}{section.2.1}%
+\contentsline {chapter}{\numberline {3}Class Documentation}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}AIStats Struct Reference}{5}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Detailed Description}{5}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Member Data Documentation}{5}{subsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.1}cache\_hits}{5}{subsubsection.3.1.2.1}%
+\contentsline {subsubsection}{\numberline {3.1.2.2}nodes\_searched}{5}{subsubsection.3.1.2.2}%
+\contentsline {subsubsection}{\numberline {3.1.2.3}pruned}{6}{subsubsection.3.1.2.3}%
+\contentsline {subsubsection}{\numberline {3.1.2.4}time\_taken}{6}{subsubsection.3.1.2.4}%
+\contentsline {section}{\numberline {3.2}Direction Struct Reference}{6}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Detailed Description}{6}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Member Data Documentation}{6}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}dx}{6}{subsubsection.3.2.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}dy}{6}{subsubsection.3.2.2.2}%
+\contentsline {section}{\numberline {3.3}Gomoku\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Game Struct Reference}{7}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Detailed Description}{7}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Member Data Documentation}{7}{subsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.2.1}board}{7}{subsubsection.3.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.3.2.2}current\_player}{7}{subsubsection.3.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.3.2.3}mode\_ai}{7}{subsubsection.3.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.3.2.4}rule\_captures}{8}{subsubsection.3.3.2.4}%
+\contentsline {subsubsection}{\numberline {3.3.2.5}rule\_center\_opening}{8}{subsubsection.3.3.2.5}%
+\contentsline {subsubsection}{\numberline {3.3.2.6}rule\_no\_double\_threes}{8}{subsubsection.3.3.2.6}%
+\contentsline {subsubsection}{\numberline {3.3.2.7}taken\_stones}{8}{subsubsection.3.3.2.7}%
+\contentsline {section}{\numberline {3.4}Move Struct Reference}{8}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Detailed Description}{8}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Member Data Documentation}{8}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}col}{9}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}row}{9}{subsubsection.3.4.2.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.3}score}{9}{subsubsection.3.4.2.3}%
+\contentsline {section}{\numberline {3.5}TTEntry Struct Reference}{9}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Detailed Description}{10}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Member Data Documentation}{10}{subsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.2.1}depth}{10}{subsubsection.3.5.2.1}%
+\contentsline {subsubsection}{\numberline {3.5.2.2}key}{10}{subsubsection.3.5.2.2}%
+\contentsline {subsubsection}{\numberline {3.5.2.3}move}{10}{subsubsection.3.5.2.3}%
+\contentsline {subsubsection}{\numberline {3.5.2.4}score}{10}{subsubsection.3.5.2.4}%
+\contentsline {section}{\numberline {3.6}Visual\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Marker Struct Reference}{10}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Detailed Description}{11}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Member Data Documentation}{11}{subsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {3.6.2.1}col}{11}{subsubsection.3.6.2.1}%
+\contentsline {subsubsection}{\numberline {3.6.2.2}color}{11}{subsubsection.3.6.2.2}%
+\contentsline {subsubsection}{\numberline {3.6.2.3}row}{11}{subsubsection.3.6.2.3}%
+\contentsline {chapter}{\numberline {4}File Documentation}{13}{chapter.4}%
+\contentsline {section}{\numberline {4.1}includes/ai.h File Reference}{13}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Function Documentation}{14}{subsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.1.1}ai\_cleanup()}{14}{subsubsection.4.1.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.1.2}ai\_evaluate\_position()}{14}{subsubsection.4.1.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.1.3}ai\_evaluate\_position\_for\_player()}{15}{subsubsection.4.1.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.1.4}ai\_generate\_moves()}{15}{subsubsection.4.1.1.4}%
+\contentsline {subsubsection}{\numberline {4.1.1.5}ai\_get\_best\_move()}{15}{subsubsection.4.1.1.5}%
+\contentsline {subsubsection}{\numberline {4.1.1.6}ai\_get\_last\_stats()}{16}{subsubsection.4.1.1.6}%
+\contentsline {subsubsection}{\numberline {4.1.1.7}ai\_init()}{16}{subsubsection.4.1.1.7}%
+\contentsline {section}{\numberline {4.2}includes/game.h File Reference}{16}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Function Documentation}{17}{subsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.1.1}game\_capture\_stones()}{17}{subsubsection.4.2.1.1}%
+\contentsline {subsubsection}{\numberline {4.2.1.2}game\_check\_winner()}{18}{subsubsection.4.2.1.2}%
+\contentsline {subsubsection}{\numberline {4.2.1.3}game\_copy()}{18}{subsubsection.4.2.1.3}%
+\contentsline {subsubsection}{\numberline {4.2.1.4}game\_hash()}{19}{subsubsection.4.2.1.4}%
+\contentsline {subsubsection}{\numberline {4.2.1.5}game\_init()}{19}{subsubsection.4.2.1.5}%
+\contentsline {subsubsection}{\numberline {4.2.1.6}game\_is\_double\_free\_three()}{19}{subsubsection.4.2.1.6}%
+\contentsline {subsubsection}{\numberline {4.2.1.7}game\_is\_valid\_position()}{20}{subsubsection.4.2.1.7}%
+\contentsline {subsubsection}{\numberline {4.2.1.8}game\_place\_stone()}{20}{subsubsection.4.2.1.8}%
+\contentsline {subsubsection}{\numberline {4.2.1.9}game\_print\_board()}{21}{subsubsection.4.2.1.9}%
+\contentsline {section}{\numberline {4.3}includes/graphics.h File Reference}{21}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Function Documentation}{22}{subsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.1.1}graphics\_add\_visual\_marker()}{22}{subsubsection.4.3.1.1}%
+\contentsline {subsubsection}{\numberline {4.3.1.2}graphics\_cleanup()}{23}{subsubsection.4.3.1.2}%
+\contentsline {subsubsection}{\numberline {4.3.1.3}graphics\_clear\_visual\_markers()}{23}{subsubsection.4.3.1.3}%
+\contentsline {subsubsection}{\numberline {4.3.1.4}graphics\_draw\_game()}{23}{subsubsection.4.3.1.4}%
+\contentsline {subsubsection}{\numberline {4.3.1.5}graphics\_get\_renderer()}{23}{subsubsection.4.3.1.5}%
+\contentsline {subsubsection}{\numberline {4.3.1.6}graphics\_get\_window()}{24}{subsubsection.4.3.1.6}%
+\contentsline {subsubsection}{\numberline {4.3.1.7}graphics\_handle\_click()}{24}{subsubsection.4.3.1.7}%
+\contentsline {subsubsection}{\numberline {4.3.1.8}graphics\_init()}{24}{subsubsection.4.3.1.8}%
+\contentsline {subsubsection}{\numberline {4.3.1.9}graphics\_remove\_visual\_marker()}{25}{subsubsection.4.3.1.9}%
+\contentsline {subsubsection}{\numberline {4.3.1.10}graphics\_show\_winner()}{26}{subsubsection.4.3.1.10}%
+\contentsline {subsection}{\numberline {4.3.2}Variable Documentation}{26}{subsection.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.3.2.1}button\_rects}{26}{subsubsection.4.3.2.1}%
+\contentsline {section}{\numberline {4.4}includes/types.h File Reference}{26}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Macro Definition Documentation}{28}{subsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.1.1}AI\_INFINITY}{28}{subsubsection.4.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.4.1.2}BLACK}{28}{subsubsection.4.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.4.1.3}BOARD\_SIZE}{28}{subsubsection.4.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.4.1.4}CELL\_SIZE}{28}{subsubsection.4.4.1.4}%
+\contentsline {subsubsection}{\numberline {4.4.1.5}EMPTY}{28}{subsubsection.4.4.1.5}%
+\contentsline {subsubsection}{\numberline {4.4.1.6}M\_PI}{28}{subsubsection.4.4.1.6}%
+\contentsline {subsubsection}{\numberline {4.4.1.7}MAX\_MOVES}{29}{subsubsection.4.4.1.7}%
+\contentsline {subsubsection}{\numberline {4.4.1.8}MAX\_TT\_SIZE}{29}{subsubsection.4.4.1.8}%
+\contentsline {subsubsection}{\numberline {4.4.1.9}MAX\_VISUAL\_MARKERS}{29}{subsubsection.4.4.1.9}%
+\contentsline {subsubsection}{\numberline {4.4.1.10}PATTERN\_FOUR}{29}{subsubsection.4.4.1.10}%
+\contentsline {subsubsection}{\numberline {4.4.1.11}PATTERN\_ONE}{29}{subsubsection.4.4.1.11}%
+\contentsline {subsubsection}{\numberline {4.4.1.12}PATTERN\_THREE}{29}{subsubsection.4.4.1.12}%
+\contentsline {subsubsection}{\numberline {4.4.1.13}PATTERN\_TWO}{29}{subsubsection.4.4.1.13}%
+\contentsline {subsubsection}{\numberline {4.4.1.14}PATTERN\_WIN}{29}{subsubsection.4.4.1.14}%
+\contentsline {subsubsection}{\numberline {4.4.1.15}WHITE}{30}{subsubsection.4.4.1.15}%
+\contentsline {subsubsection}{\numberline {4.4.1.16}WINDOW\_HEIGHT}{30}{subsubsection.4.4.1.16}%
+\contentsline {subsubsection}{\numberline {4.4.1.17}WINDOW\_WIDTH}{30}{subsubsection.4.4.1.17}%
+\contentsline {subsection}{\numberline {4.4.2}Variable Documentation}{30}{subsection.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.2.1}COLOR\_BACKGROUND}{30}{subsubsection.4.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.4.2.2}COLOR\_BLACK}{30}{subsubsection.4.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.4.2.3}COLOR\_BLUE}{30}{subsubsection.4.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.4.2.4}COLOR\_RED}{30}{subsubsection.4.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.4.2.5}COLOR\_WHITE}{31}{subsubsection.4.4.2.5}%
+\contentsline {section}{\numberline {4.5}src/ai.c File Reference}{31}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Function Documentation}{32}{subsection.4.5.1}%
+\contentsline {subsubsection}{\numberline {4.5.1.1}ai\_cleanup()}{32}{subsubsection.4.5.1.1}%
+\contentsline {subsubsection}{\numberline {4.5.1.2}ai\_evaluate\_position()}{32}{subsubsection.4.5.1.2}%
+\contentsline {subsubsection}{\numberline {4.5.1.3}ai\_evaluate\_position\_for\_player()}{33}{subsubsection.4.5.1.3}%
+\contentsline {subsubsection}{\numberline {4.5.1.4}ai\_generate\_moves()}{33}{subsubsection.4.5.1.4}%
+\contentsline {subsubsection}{\numberline {4.5.1.5}ai\_get\_best\_move()}{33}{subsubsection.4.5.1.5}%
+\contentsline {subsubsection}{\numberline {4.5.1.6}ai\_get\_last\_stats()}{34}{subsubsection.4.5.1.6}%
+\contentsline {subsubsection}{\numberline {4.5.1.7}ai\_init()}{34}{subsubsection.4.5.1.7}%
+\contentsline {subsubsection}{\numberline {4.5.1.8}count\_consecutive\_optimized()}{34}{subsubsection.4.5.1.8}%
+\contentsline {subsubsection}{\numberline {4.5.1.9}evaluate\_line\_optimized()}{35}{subsubsection.4.5.1.9}%
+\contentsline {subsubsection}{\numberline {4.5.1.10}find\_blocking\_moves\_smart()}{35}{subsubsection.4.5.1.10}%
+\contentsline {subsubsection}{\numberline {4.5.1.11}find\_neighbor\_positions\_smart()}{35}{subsubsection.4.5.1.11}%
+\contentsline {subsubsection}{\numberline {4.5.1.12}find\_winning\_moves\_smart()}{35}{subsubsection.4.5.1.12}%
+\contentsline {subsubsection}{\numberline {4.5.1.13}game\_hash\_optimized()}{35}{subsubsection.4.5.1.13}%
+\contentsline {subsubsection}{\numberline {4.5.1.14}is\_immediate\_threat()}{36}{subsubsection.4.5.1.14}%
+\contentsline {subsubsection}{\numberline {4.5.1.15}is\_winning\_move\_fast()}{36}{subsubsection.4.5.1.15}%
+\contentsline {subsubsection}{\numberline {4.5.1.16}minimax\_balanced()}{36}{subsubsection.4.5.1.16}%
+\contentsline {subsection}{\numberline {4.5.2}Variable Documentation}{36}{subsection.4.5.2}%
+\contentsline {subsubsection}{\numberline {4.5.2.1}directions}{36}{subsubsection.4.5.2.1}%
+\contentsline {subsubsection}{\numberline {4.5.2.2}last\_stats}{36}{subsubsection.4.5.2.2}%
+\contentsline {subsubsection}{\numberline {4.5.2.3}transposition\_table}{37}{subsubsection.4.5.2.3}%
+\contentsline {section}{\numberline {4.6}src/game.c File Reference}{37}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Function Documentation}{38}{subsection.4.6.1}%
+\contentsline {subsubsection}{\numberline {4.6.1.1}game\_capture\_stones()}{38}{subsubsection.4.6.1.1}%
+\contentsline {subsubsection}{\numberline {4.6.1.2}game\_check\_winner()}{38}{subsubsection.4.6.1.2}%
+\contentsline {subsubsection}{\numberline {4.6.1.3}game\_copy()}{39}{subsubsection.4.6.1.3}%
+\contentsline {subsubsection}{\numberline {4.6.1.4}game\_hash()}{39}{subsubsection.4.6.1.4}%
+\contentsline {subsubsection}{\numberline {4.6.1.5}game\_init()}{39}{subsubsection.4.6.1.5}%
+\contentsline {subsubsection}{\numberline {4.6.1.6}game\_is\_double\_free\_three()}{39}{subsubsection.4.6.1.6}%
+\contentsline {subsubsection}{\numberline {4.6.1.7}game\_is\_valid\_position()}{40}{subsubsection.4.6.1.7}%
+\contentsline {subsubsection}{\numberline {4.6.1.8}game\_place\_stone()}{40}{subsubsection.4.6.1.8}%
+\contentsline {subsubsection}{\numberline {4.6.1.9}game\_print\_board()}{41}{subsubsection.4.6.1.9}%
+\contentsline {subsection}{\numberline {4.6.2}Variable Documentation}{41}{subsection.4.6.2}%
+\contentsline {subsubsection}{\numberline {4.6.2.1}directions}{41}{subsubsection.4.6.2.1}%
+\contentsline {section}{\numberline {4.7}src/graphics.c File Reference}{41}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Macro Definition Documentation}{43}{subsection.4.7.1}%
+\contentsline {subsubsection}{\numberline {4.7.1.1}BUTTON\_HEIGHT}{43}{subsubsection.4.7.1.1}%
+\contentsline {subsubsection}{\numberline {4.7.1.2}BUTTON\_MARGIN}{43}{subsubsection.4.7.1.2}%
+\contentsline {subsubsection}{\numberline {4.7.1.3}BUTTON\_WIDTH}{43}{subsubsection.4.7.1.3}%
+\contentsline {subsection}{\numberline {4.7.2}Function Documentation}{43}{subsection.4.7.2}%
+\contentsline {subsubsection}{\numberline {4.7.2.1}draw\_board()}{44}{subsubsection.4.7.2.1}%
+\contentsline {subsubsection}{\numberline {4.7.2.2}draw\_circle\_filled()}{44}{subsubsection.4.7.2.2}%
+\contentsline {subsubsection}{\numberline {4.7.2.3}draw\_rule\_buttons()}{44}{subsubsection.4.7.2.3}%
+\contentsline {subsubsection}{\numberline {4.7.2.4}draw\_simple\_number()}{44}{subsubsection.4.7.2.4}%
+\contentsline {subsubsection}{\numberline {4.7.2.5}draw\_simple\_text()}{44}{subsubsection.4.7.2.5}%
+\contentsline {subsubsection}{\numberline {4.7.2.6}draw\_stone()}{44}{subsubsection.4.7.2.6}%
+\contentsline {subsubsection}{\numberline {4.7.2.7}draw\_visual\_markers()}{45}{subsubsection.4.7.2.7}%
+\contentsline {subsubsection}{\numberline {4.7.2.8}graphics\_add\_visual\_marker()}{45}{subsubsection.4.7.2.8}%
+\contentsline {subsubsection}{\numberline {4.7.2.9}graphics\_cleanup()}{45}{subsubsection.4.7.2.9}%
+\contentsline {subsubsection}{\numberline {4.7.2.10}graphics\_clear\_visual\_markers()}{45}{subsubsection.4.7.2.10}%
+\contentsline {subsubsection}{\numberline {4.7.2.11}graphics\_draw\_game()}{45}{subsubsection.4.7.2.11}%
+\contentsline {subsubsection}{\numberline {4.7.2.12}graphics\_get\_renderer()}{46}{subsubsection.4.7.2.12}%
+\contentsline {subsubsection}{\numberline {4.7.2.13}graphics\_get\_window()}{46}{subsubsection.4.7.2.13}%
+\contentsline {subsubsection}{\numberline {4.7.2.14}graphics\_handle\_click()}{46}{subsubsection.4.7.2.14}%
+\contentsline {subsubsection}{\numberline {4.7.2.15}graphics\_init()}{47}{subsubsection.4.7.2.15}%
+\contentsline {subsubsection}{\numberline {4.7.2.16}graphics\_remove\_visual\_marker()}{47}{subsubsection.4.7.2.16}%
+\contentsline {subsubsection}{\numberline {4.7.2.17}graphics\_show\_winner()}{47}{subsubsection.4.7.2.17}%
+\contentsline {subsection}{\numberline {4.7.3}Variable Documentation}{47}{subsection.4.7.3}%
+\contentsline {subsubsection}{\numberline {4.7.3.1}button\_rects}{48}{subsubsection.4.7.3.1}%
+\contentsline {subsubsection}{\numberline {4.7.3.2}COLOR\_BACKGROUND}{48}{subsubsection.4.7.3.2}%
+\contentsline {subsubsection}{\numberline {4.7.3.3}COLOR\_BLACK}{48}{subsubsection.4.7.3.3}%
+\contentsline {subsubsection}{\numberline {4.7.3.4}COLOR\_BLUE}{48}{subsubsection.4.7.3.4}%
+\contentsline {subsubsection}{\numberline {4.7.3.5}COLOR\_RED}{48}{subsubsection.4.7.3.5}%
+\contentsline {subsubsection}{\numberline {4.7.3.6}COLOR\_WHITE}{48}{subsubsection.4.7.3.6}%
+\contentsline {subsubsection}{\numberline {4.7.3.7}font}{48}{subsubsection.4.7.3.7}%
+\contentsline {subsubsection}{\numberline {4.7.3.8}renderer}{49}{subsubsection.4.7.3.8}%
+\contentsline {subsubsection}{\numberline {4.7.3.9}visual\_marker\_count}{49}{subsubsection.4.7.3.9}%
+\contentsline {subsubsection}{\numberline {4.7.3.10}visual\_markers}{49}{subsubsection.4.7.3.10}%
+\contentsline {subsubsection}{\numberline {4.7.3.11}window}{49}{subsubsection.4.7.3.11}%
+\contentsline {section}{\numberline {4.8}src/main.c File Reference}{49}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Macro Definition Documentation}{50}{subsection.4.8.1}%
+\contentsline {subsubsection}{\numberline {4.8.1.1}AI\_PLAYER}{50}{subsubsection.4.8.1.1}%
+\contentsline {subsubsection}{\numberline {4.8.1.2}AI\_SEARCH\_DEPTH}{50}{subsubsection.4.8.1.2}%
+\contentsline {subsection}{\numberline {4.8.2}Function Documentation}{50}{subsection.4.8.2}%
+\contentsline {subsubsection}{\numberline {4.8.2.1}get\_rule\_button\_clicked()}{50}{subsubsection.4.8.2.1}%
+\contentsline {subsubsection}{\numberline {4.8.2.2}handle\_ai\_move()}{50}{subsubsection.4.8.2.2}%
+\contentsline {subsubsection}{\numberline {4.8.2.3}handle\_player\_move()}{51}{subsubsection.4.8.2.3}%
+\contentsline {subsubsection}{\numberline {4.8.2.4}main()}{51}{subsubsection.4.8.2.4}%
+\contentsline {subsubsection}{\numberline {4.8.2.5}print\_game\_info()}{51}{subsubsection.4.8.2.5}%
+\contentsline {chapter}{Index}{53}{section*.36}%

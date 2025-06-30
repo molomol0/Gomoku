@@ -10,9 +10,9 @@ void game_init(GomokuGame* game) {
     game->current_player = BLACK;
     game->taken_stones[0] = 0;
     game->taken_stones[1] = 0;
-    game->rule_center_opening = true;
-    game->rule_no_double_threes = true;
-    game->rule_captures = true;
+    game->rule_center_opening = false;
+    game->rule_no_double_threes = false;
+    game->rule_captures = false;
     game->mode_ai = true;
     
 }
@@ -144,7 +144,7 @@ bool game_place_stone(GomokuGame* game, int row, int col) {
     }
     
     // Check center opening rule
-    if (game->rule_center_opening && game->current_player == BLACK) {
+    if (!game->rule_center_opening && game->current_player == BLACK) {
         bool empty_board = true;
         for (int i = 0; i < BOARD_SIZE && empty_board; i++) {
             for (int j = 0; j < BOARD_SIZE && empty_board; j++) {
@@ -159,7 +159,7 @@ bool game_place_stone(GomokuGame* game, int row, int col) {
     }
     
     // Check double free three rule
-    if (game->rule_no_double_threes && 
+    if (!game->rule_no_double_threes && 
         game_is_double_free_three(game, row, col, game->current_player)) {
         return false;
     }

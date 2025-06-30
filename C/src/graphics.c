@@ -300,7 +300,7 @@ void draw_rule_buttons(const GomokuGame* game) {
     const char* labels[4] = {
         "Captures",
         "Double Three",
-        "Center Opening",
+        "Free Opening",
         "AI Mode"
     };
     const bool states[4] = {

@@ -1,0 +1,218 @@
+\hypertarget{game_8h}{}\doxysection{includes/game.h File Reference}
+\label{game_8h}\index{includes/game.h@{includes/game.h}}
+{\ttfamily \#include \char`\"{}types.\+h\char`\"{}}\newline
+Include dependency graph for game.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{game_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{game_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{game_8h_a4eb894bc251395edcb00d0cb7b094a77}{game\+\_\+init}} (\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game)
+\begin{DoxyCompactList}\small\item\em Initialize game state. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{game_8h_a73aa51b6e600e4ea5919796c2dc4578b}{game\+\_\+copy}} (\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$dest, const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$src)
+\begin{DoxyCompactList}\small\item\em Copy game state. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{game_8h_a137e96b7265f79948f03dc429c1f627c}{game\+\_\+place\+\_\+stone}} (\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int row, int col)
+\begin{DoxyCompactList}\small\item\em Place a stone on the board. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{game_8h_a8272c125ae83cac9ac430831236b3fc2}{game\+\_\+check\+\_\+winner}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int $\ast$winner)
+\begin{DoxyCompactList}\small\item\em Check if the game has a winner. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{game_8h_aaf6d7f6127189e879c0c8918f72684f4}{game\+\_\+is\+\_\+valid\+\_\+position}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int row, int col)
+\begin{DoxyCompactList}\small\item\em Check if position is valid for placement. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{game_8h_ab192e7719d6ab14ee85e73771185d7d3}{game\+\_\+is\+\_\+double\+\_\+free\+\_\+three}} (\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int row, int col, int player)
+\begin{DoxyCompactList}\small\item\em Check if move creates double free three. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{game_8h_a22f395132a8532d18cb6facc25cf3c8c}{game\+\_\+capture\+\_\+stones}} (\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game, int row, int col)
+\begin{DoxyCompactList}\small\item\em Capture stones around a placed stone. \end{DoxyCompactList}\item 
+uint64\+\_\+t \mbox{\hyperlink{game_8h_a8efbc2deaf0722309b5a9840341bd788}{game\+\_\+hash}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game)
+\begin{DoxyCompactList}\small\item\em Get hash value for game state. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{game_8h_a28712f931bf029ecf018b557093daaa1}{game\+\_\+print\+\_\+board}} (const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$game)
+\begin{DoxyCompactList}\small\item\em Print board state to console. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{game_8h_a22f395132a8532d18cb6facc25cf3c8c}\label{game_8h_a22f395132a8532d18cb6facc25cf3c8c}} 
+\index{game.h@{game.h}!game\_capture\_stones@{game\_capture\_stones}}
+\index{game\_capture\_stones@{game\_capture\_stones}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_capture\_stones()}{game\_capture\_stones()}}
+{\footnotesize\ttfamily int game\+\_\+capture\+\_\+stones (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int}]{row,  }\item[{int}]{col }\end{DoxyParamCaption})}
+
+
+
+Capture stones around a placed stone. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em row} & Row of placed stone \\
+\hline
+{\em col} & Column of placed stone \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Number of stones captured 
+\end{DoxyReturn}
+\mbox{\Hypertarget{game_8h_a8272c125ae83cac9ac430831236b3fc2}\label{game_8h_a8272c125ae83cac9ac430831236b3fc2}} 
+\index{game.h@{game.h}!game\_check\_winner@{game\_check\_winner}}
+\index{game\_check\_winner@{game\_check\_winner}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_check\_winner()}{game\_check\_winner()}}
+{\footnotesize\ttfamily bool game\+\_\+check\+\_\+winner (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int $\ast$}]{winner }\end{DoxyParamCaption})}
+
+
+
+Check if the game has a winner. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em winner} & Pointer to store winner (if any) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if game is over, false otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{game_8h_a73aa51b6e600e4ea5919796c2dc4578b}\label{game_8h_a73aa51b6e600e4ea5919796c2dc4578b}} 
+\index{game.h@{game.h}!game\_copy@{game\_copy}}
+\index{game\_copy@{game\_copy}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_copy()}{game\_copy()}}
+{\footnotesize\ttfamily void game\+\_\+copy (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{dest,  }\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{src }\end{DoxyParamCaption})}
+
+
+
+Copy game state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & Destination game structure \\
+\hline
+{\em src} & Source game structure \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{game_8h_a8efbc2deaf0722309b5a9840341bd788}\label{game_8h_a8efbc2deaf0722309b5a9840341bd788}} 
+\index{game.h@{game.h}!game\_hash@{game\_hash}}
+\index{game\_hash@{game\_hash}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_hash()}{game\_hash()}}
+{\footnotesize\ttfamily uint64\+\_\+t game\+\_\+hash (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+
+Get hash value for game state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Hash value 
+\end{DoxyReturn}
+\mbox{\Hypertarget{game_8h_a4eb894bc251395edcb00d0cb7b094a77}\label{game_8h_a4eb894bc251395edcb00d0cb7b094a77}} 
+\index{game.h@{game.h}!game\_init@{game\_init}}
+\index{game\_init@{game\_init}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_init()}{game\_init()}}
+{\footnotesize\ttfamily void game\+\_\+init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+
+Initialize game state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Pointer to game structure \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{game_8h_ab192e7719d6ab14ee85e73771185d7d3}\label{game_8h_ab192e7719d6ab14ee85e73771185d7d3}} 
+\index{game.h@{game.h}!game\_is\_double\_free\_three@{game\_is\_double\_free\_three}}
+\index{game\_is\_double\_free\_three@{game\_is\_double\_free\_three}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_is\_double\_free\_three()}{game\_is\_double\_free\_three()}}
+{\footnotesize\ttfamily bool game\+\_\+is\+\_\+double\+\_\+free\+\_\+three (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int}]{row,  }\item[{int}]{col,  }\item[{int}]{player }\end{DoxyParamCaption})}
+
+
+
+Check if move creates double free three. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em row} & Row position \\
+\hline
+{\em col} & Column position \\
+\hline
+{\em player} & Player making the move \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if creates double free three, false otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{game_8h_aaf6d7f6127189e879c0c8918f72684f4}\label{game_8h_aaf6d7f6127189e879c0c8918f72684f4}} 
+\index{game.h@{game.h}!game\_is\_valid\_position@{game\_is\_valid\_position}}
+\index{game\_is\_valid\_position@{game\_is\_valid\_position}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_is\_valid\_position()}{game\_is\_valid\_position()}}
+{\footnotesize\ttfamily bool game\+\_\+is\+\_\+valid\+\_\+position (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int}]{row,  }\item[{int}]{col }\end{DoxyParamCaption})}
+
+
+
+Check if position is valid for placement. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em row} & Row position \\
+\hline
+{\em col} & Column position \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if position is valid, false otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{game_8h_a137e96b7265f79948f03dc429c1f627c}\label{game_8h_a137e96b7265f79948f03dc429c1f627c}} 
+\index{game.h@{game.h}!game\_place\_stone@{game\_place\_stone}}
+\index{game\_place\_stone@{game\_place\_stone}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_place\_stone()}{game\_place\_stone()}}
+{\footnotesize\ttfamily bool game\+\_\+place\+\_\+stone (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game,  }\item[{int}]{row,  }\item[{int}]{col }\end{DoxyParamCaption})}
+
+
+
+Place a stone on the board. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+{\em row} & Row position \\
+\hline
+{\em col} & Column position \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if move was successful, false otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{game_8h_a28712f931bf029ecf018b557093daaa1}\label{game_8h_a28712f931bf029ecf018b557093daaa1}} 
+\index{game.h@{game.h}!game\_print\_board@{game\_print\_board}}
+\index{game\_print\_board@{game\_print\_board}!game.h@{game.h}}
+\doxysubsubsection{\texorpdfstring{game\_print\_board()}{game\_print\_board()}}
+{\footnotesize\ttfamily void game\+\_\+print\+\_\+board (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structGomokuGame}{Gomoku\+Game}} $\ast$}]{game }\end{DoxyParamCaption})}
+
+
+
+Print board state to console. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em game} & Game state \\
+\hline
+\end{DoxyParams}
