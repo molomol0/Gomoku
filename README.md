@@ -1,8 +1,9 @@
 # Gomoku
 Rules (French): http://jeuxdesociete.free.fr/jeux/jeu-gomoku.html
 
-Prerequise:
+You need:
 Linux x11
+Docker
 
 ## Main command
 1. Play
