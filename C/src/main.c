@@ -1,6 +1,6 @@
 #include "types.h"
 #include "game.h"
-#include "ai_core.h"
+#include "ai.h"
 #include "graphics.h"
 #include <stdio.h>
 #include <stdbool.h>
