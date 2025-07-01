@@ -2,10 +2,10 @@
 Rules (French): http://jeuxdesociete.free.fr/jeux/jeu-gomoku.html
 
 You need:
-Linux x11
-Docker
+- Linux X11
+- Docker
 
-## Main command
+## Useful commands
 1. Play
 ```bash
 make docker
