@@ -1,0 +1,87 @@
+ai_init:
+	create/malloc transposition table and last stats	
+
+
+ai_cleanup:
+	free transposition table
+
+
+game_hash_optimized:
+	create a hash value unique for the given game state so checking if 2 game state are the same become easier
+
+
+count_consecutive_otpimized:(maybe can be erased)
+	take the last move made and check in all direction the number of stones align
+
+
+evaluate_line_optimized:
+	also take the last move and count stones in all directions
+	check both ends of the stones "lines" to see if they are open/half open, ect...
+	associate score based on the number of stones aligned and use a multiplier depending 
+		on how "free" and the ends
+
+
+
+is_immediate_threat:
+	count the number of concecutive stone for a given position
+	if it count 4 stones (1 away from winning) check if either end of the 4 stones is open
+
+
+
+ai_evaluate_position_for_player:
+
+
+
+
+is_winning_move_fast:
+	check for position if a player has 5 consecutives stones
+
+
+
+find_winning_moves_smart:
+	for stones already placed on the board check all adjacent free space around to see if placing a stone here would 
+	win the game 
+	it check for up to 5 winning moves 
+
+
+
+find_blocking_moves_smart:
+	check for every free space check if the cell is near (2 away) of an existing stone to prevent useless check
+	put the move on high priority to block if it is detected as a threat
+
+
+find_neighbor positions_smart:
+	restricts the generation of possible moves to empty cells that are at most 3 cells away from any existing stone
+
+
+
+ai_generate_moves:
+	check if the board is empty, if yes place 3stone in the middle
+	generate move in order of importance :
+		- direct win
+		- direct loss
+		- possible loss
+	if none of the bove found -> search for possible moves around already placed stones
+	evaluate best moves found previously
+	sort moves by score
+
+
+
+ai_evaluate_position:
+	check for terminal state (return ± infinity (depending if Min or Max player won))
+	for every stone placed evaluate position and add to the score
+	add captured stone to the score
+
+
+
+minimax_balanced:
+	
+
+
+
+ai_get_best_move:
+
+
+
+
+
