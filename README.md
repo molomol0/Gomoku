@@ -1,12 +1,12 @@
 # Gomoku
 Rules (French): http://jeuxdesociete.free.fr/jeux/jeu-gomoku.html
 
-##How to use
+## How to use
 ```bash
 make docker
 ```
 
-##Get help
+## Get help
 ```bash
 make help
 ```
