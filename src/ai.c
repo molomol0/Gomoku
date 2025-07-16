@@ -447,11 +447,11 @@ int ai_evaluate_position(const GomokuGame* game) {
 static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bool maximizing, Move* best_move) {
     last_stats.nodes_searched++;
     
-    // Use optimized hash
+    // Hash game state
     uint64_t state_key = game_hash_optimized(game);
     int tt_index = state_key % MAX_TT_SIZE;
     
-    // Transposition table lookup
+    // Transposition table equivalence check
     if (transposition_table[tt_index].key == state_key && 
         transposition_table[tt_index].depth >= depth) {
         last_stats.cache_hits++;
@@ -563,8 +563,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     last_stats.pruned = 0;
     
     clock_t start = clock();
-    
-    // Enhanced threat detection
+
     Move moves[MAX_MOVES * 4];
     int move_count;
     ai_generate_moves(game, moves, &move_count, MAX_MOVES);
@@ -596,7 +595,6 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
         }
     }
     
-    // NEW: Check for immediate threats (4-in-a-row) to block
     for (int i = 0; i < move_count; i++) {
         if (is_immediate_threat(game, moves[i].row, moves[i].col, opponent)) {
             printf("Blocking immediate threat at: (%d, %d)\n", moves[i].row, moves[i].col);
@@ -632,7 +630,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     printf("Nodes searched: %d, Cache hits: %d, Pruned: %d\n", 
            last_stats.nodes_searched, last_stats.cache_hits, last_stats.pruned);
     
-    // Add printing of top 15 moves
+    // Printing of top 15 moves
     printf("\nTop 15 considered moves:\n");
     int display_count = move_count < 15 ? move_count : 15;
     Move real_best_move = moves[0];
