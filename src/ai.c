@@ -625,6 +625,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
         }
     }
     
+    graphics_set_ai_time(last_stats.time_taken);
     printf("AI found move (%d, %d) with score %d in %.2f seconds\n", 
            best_move.row, best_move.col, score, last_stats.time_taken);
     printf("Nodes searched: %d, Cache hits: %d, Pruned: %d\n", 

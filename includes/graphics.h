@@ -60,6 +60,12 @@ void graphics_remove_visual_marker(int row, int col);
 void graphics_show_winner(int winner);
 
 /**
+ * @brief Set AI thinking time for visualization
+ * @param seconds Time in seconds
+ */
+void graphics_set_ai_time(double seconds);
+
+/**
  * @brief Get SDL renderer (for custom drawing)
  * @return SDL renderer pointer
  */

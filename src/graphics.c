@@ -15,6 +15,7 @@ static SDL_Renderer* renderer = NULL;
 static VisualMarker visual_markers[MAX_VISUAL_MARKERS];
 static int visual_marker_count = 0;
 static TTF_Font* font = NULL;
+static double last_ai_time = 0.0;
 
 
 // Internal function declarations
@@ -293,6 +294,12 @@ void graphics_draw_game(const GomokuGame* game) {
     // draw_simple_number(CELL_SIZE * BOARD_SIZE + 20, 80, game->taken_stones[1]);
     
     draw_rule_buttons(game);
+
+    // Display AI thinking time
+    char ai_time_str[64];
+    snprintf(ai_time_str, sizeof(ai_time_str), "AI Time: %.3f s", last_ai_time);
+    draw_simple_text(800, 480, ai_time_str);
+
     SDL_RenderPresent(renderer);
 }
 
@@ -391,6 +398,10 @@ void graphics_show_winner(int winner) {
     }
     
     SDL_RenderPresent(renderer);
+}
+
+void graphics_set_ai_time(double seconds) {
+    last_ai_time = seconds;
 }
 
 SDL_Renderer* graphics_get_renderer(void) {
