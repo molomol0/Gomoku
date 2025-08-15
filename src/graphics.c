@@ -287,12 +287,6 @@ void graphics_draw_game(const GomokuGame* game) {
     SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
     SDL_RenderDrawRect(renderer, &indicator);
     
-    // Draw simple number for black captures
-    // draw_simple_number(CELL_SIZE * BOARD_SIZE + 20, 50, game->taken_stones[0]);
-    
-    // Draw simple number for white captures
-    // draw_simple_number(CELL_SIZE * BOARD_SIZE + 20, 80, game->taken_stones[1]);
-    
     draw_rule_buttons(game);
 
     // Display AI thinking time

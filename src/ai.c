@@ -9,6 +9,11 @@ static TTEntry* transposition_table = NULL;
 static AIStats last_stats = {0};
 static const Direction directions[4] = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
 
+// Time limit variables
+static clock_t search_start_time;
+static double time_limit_seconds = 0.5;
+static bool use_time_limit = true;
+
 // Internal function declarations
 static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bool maximizing, Move* best_move);
 static inline int count_consecutive_optimized(const GomokuGame* game, int row, int col, int dx, int dy, int player);
@@ -18,6 +23,16 @@ static void find_blocking_moves_smart(const GomokuGame* game, Move* moves, int* 
 static void find_neighbor_positions_smart(const GomokuGame* game, Move* moves, int* count, int max_moves);
 static uint64_t game_hash_optimized(const GomokuGame* game);
 static bool is_immediate_threat(const GomokuGame* game, int row, int col, int player);
+static inline bool is_time_exceeded(void);
+
+// Time check function
+static inline bool is_time_exceeded(void) {
+    if (!use_time_limit) return false;
+    
+    clock_t current_time = clock();
+    double elapsed = ((double)(current_time - search_start_time)) / CLOCKS_PER_SEC;
+    return elapsed >= time_limit_seconds;
+}
 
 void ai_init(void) {
     transposition_table = calloc(MAX_TT_SIZE, sizeof(TTEntry));
@@ -32,6 +47,14 @@ void ai_cleanup(void) {
     if (transposition_table) {
         free(transposition_table);
         transposition_table = NULL;
+    }
+}
+
+// New function to set time limit flag
+void ai_set_time_limit(bool enable, double seconds) {
+    use_time_limit = enable;
+    if (seconds > 0) {
+        time_limit_seconds = seconds;
     }
 }
 
@@ -447,6 +470,11 @@ int ai_evaluate_position(const GomokuGame* game) {
 static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bool maximizing, Move* best_move) {
     last_stats.nodes_searched++;
     
+    // Check time limit before expensive operations
+    if (is_time_exceeded()) {
+        return ai_evaluate_position(game);
+    }
+    
     // Hash game state
     uint64_t state_key = game_hash_optimized(game);
     int tt_index = state_key % MAX_TT_SIZE;
@@ -489,6 +517,12 @@ static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bo
         int max_eval = -AI_INFINITY;
         
         for (int i = 0; i < move_count; i++) {
+            // Check time limit before each move evaluation
+            if (is_time_exceeded()) {
+                last_stats.pruned += move_count - i;
+                break;
+            }
+            
             GomokuGame new_game;
             memcpy(&new_game, game, sizeof(GomokuGame));
             
@@ -523,6 +557,12 @@ static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bo
         int min_eval = AI_INFINITY;
         
         for (int i = 0; i < move_count; i++) {
+            // Check time limit before each move evaluation
+            if (is_time_exceeded()) {
+                last_stats.pruned += move_count - i;
+                break;
+            }
+            
             GomokuGame new_game;
             memcpy(&new_game, game, sizeof(GomokuGame));
             
@@ -557,12 +597,12 @@ static int minimax_balanced(GomokuGame* game, int depth, int alpha, int beta, bo
 }
 
 Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
-    // Reset statistics
+    // Reset statistics and start timer
     last_stats.nodes_searched = 0;
     last_stats.cache_hits = 0;
     last_stats.pruned = 0;
     
-    clock_t start = clock();
+    search_start_time = clock();
 
     Move moves[MAX_MOVES * 4];
     int move_count;
@@ -575,7 +615,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
         int score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, game->current_player);
         if (score >= AI_INFINITY) {
             printf("Immediate win found: (%d, %d)\n", moves[i].row, moves[i].col);
-            last_stats.time_taken = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            last_stats.time_taken = ((double)(clock() - search_start_time)) / CLOCKS_PER_SEC;
             if (stats) *stats = last_stats;
             return moves[i];
         }
@@ -589,7 +629,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
         int score = ai_evaluate_position_for_player(&temp_game, moves[i].row, moves[i].col, opponent);
         if (score >= AI_INFINITY) {
             printf("Blocking opponent win: (%d, %d)\n", moves[i].row, moves[i].col);
-            last_stats.time_taken = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            last_stats.time_taken = ((double)(clock() - search_start_time)) / CLOCKS_PER_SEC;
             if (stats) *stats = last_stats;
             return moves[i];
         }
@@ -598,7 +638,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     for (int i = 0; i < move_count; i++) {
         if (is_immediate_threat(game, moves[i].row, moves[i].col, opponent)) {
             printf("Blocking immediate threat at: (%d, %d)\n", moves[i].row, moves[i].col);
-            last_stats.time_taken = ((double)(clock() - start)) / CLOCKS_PER_SEC;
+            last_stats.time_taken = ((double)(clock() - search_start_time)) / CLOCKS_PER_SEC;
             if (stats) *stats = last_stats;
             return moves[i];
         }
@@ -611,7 +651,7 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     int score = minimax_balanced(&temp_game, depth, -AI_INFINITY, AI_INFINITY, true, &best_move);
     
     clock_t end = clock();
-    last_stats.time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+    last_stats.time_taken = ((double)(end - search_start_time)) / CLOCKS_PER_SEC;
     
     // Safety check
     if (best_move.row < 0 || best_move.col < 0) {
@@ -626,8 +666,9 @@ Move ai_get_best_move(const GomokuGame* game, int depth, AIStats* stats) {
     }
     
     graphics_set_ai_time(last_stats.time_taken);
-    printf("AI found move (%d, %d) with score %d in %.2f seconds\n", 
-           best_move.row, best_move.col, score, last_stats.time_taken);
+    printf("AI found move (%d, %d) with score %d in %.2f seconds%s\n", 
+           best_move.row, best_move.col, score, last_stats.time_taken,
+           (use_time_limit && is_time_exceeded()) ? " (time limit reached)" : "");
     printf("Nodes searched: %d, Cache hits: %d, Pruned: %d\n", 
            last_stats.nodes_searched, last_stats.cache_hits, last_stats.pruned);
     
